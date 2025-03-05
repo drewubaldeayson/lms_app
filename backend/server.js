@@ -18,9 +18,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from markdown-files directory
-// app.use('/', express.static(path.join(__dirname, 'markdown-files')));
-app.use('/0101-Setup-Procedures', express.static(path.join(__dirname, 'markdown-files/0101-Setup-Procedures')));
+app.use('/', express.static(path.join(__dirname, 'markdown-files')));
 
 // Log all requests (for debugging)
 app.use((req, res, next) => {
