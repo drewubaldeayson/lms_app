@@ -1,0 +1,13 @@
+{
+    "name": "lms_app",
+    "version": "1.0.0",
+    "scripts": {
+        "setup": "./setup-dev.sh",
+        "deploy": "NODE_ENV=production ./deploy.sh",
+        "start:dev": "concurrently \"cd frontend && npm start\" \"cd backend && npm run dev\"",
+        "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+    },
+    "devDependencies": {
+        "concurrently": "^7.6.0"
+    }
+}
