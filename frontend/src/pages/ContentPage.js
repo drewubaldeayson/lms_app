@@ -25,6 +25,7 @@ const ContentPage = ({ setHeadings }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [saveMessage, setSaveMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
   
   
 
@@ -73,9 +74,10 @@ const ContentPage = ({ setHeadings }) => {
     try {
       const response = await axios.put(
         `${API_URL}/api/content/file/${path}`,
-        { editableContent },
+        { content: editableContent },
         {
           headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         }

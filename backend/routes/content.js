@@ -196,18 +196,73 @@ router.put('/file/:path(*)', async (req, res) => {
     const filePath = path.join(markdownDir, req.params.path);
     const { content } = req.body;
 
-    // Write the updated content to the file
-    await fs.writeFile(filePath, content, 'utf8');
+    // Validate path and content
+    if (!req.params.path || !content) {
+      return res.status(400).json({
+        success: false,
+        message: 'Path and content are required'
+      });
+    }
 
-    res.json({
-      success: true,
-      message: 'Content updated successfully'
-    });
+    // Check if file exists
+    try {
+      await fs.access(filePath);
+    } catch (error) {
+      console.error('File not found:', filePath);
+      return res.status(404).json({
+        success: false,
+        message: 'File not found'
+      });
+    }
+
+
+    // Ensure the file is within the markdown-files directory
+    const relativePath = path.relative(markdownDir, filePath);
+    if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Invalid file path'
+      });
+    }
+
+    // Ensure it's a markdown file
+    if (!filePath.endsWith('.md')) {
+      return res.status(403).json({
+        success: false,
+        message: 'Can only edit markdown files'
+      });
+    }
+
+    // Write the updated content to the file
+    const updatedContent = await fs.writeFile(filePath, content, 'utf8');
+
+     // Extract headings from updated content
+     const headings = [];
+     const headingRegex = /^(#{1,3})\s+(.+)$/gm;
+     let match;
+     
+     while ((match = headingRegex.exec(updatedContent)) !== null) {
+       headings.push({
+         level: match[1].length,
+         text: match[2],
+         id: match[2].toLowerCase().replace(/[^\w]+/g, '-')
+       });
+     }
+ 
+     res.json({
+       success: true,
+       data: {
+         content: updatedContent,
+         headings,
+         message: 'Content updated successfully'
+       }
+     });
   } catch (error) {
     console.error('Error updating file:', error);
     res.status(500).json({
       success: false,
-      message: 'Error updating content'
+      message: 'Error updating content',
+      error: error.message
     });
   }
 });
