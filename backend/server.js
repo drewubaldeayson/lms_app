@@ -10,6 +10,8 @@ const searchRoutes = require('./routes/search');
 const videoRoutes = require('./routes/video');
 const userRoutes = require('./routes/users');
 
+const config = require('./config/config');
+
 const app = express();
 
 // Connect to MongoDB
