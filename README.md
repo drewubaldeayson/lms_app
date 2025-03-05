@@ -1,18 +1,15 @@
 # Project Setup
 
-## Backend
+## Development Mode
 
 ```
-cd backend
-npm init -y
-npm install express mongoose cors dotenv jsonwebtoken bcryptjs markdown-it directory-tree
+npm run setup        # First-time setup
+npm run start:dev    # Start development servers
 ```
 
 
-## Frontend
+## Production Mode
 
 ```
-cd frontend
-npm install @mui/material @mui/icons-material @emotion/react @emotion/styled
-npm install react-router-dom axios react-markdown react-syntax-highlighter
+npm run deploy       # Build and deploy to production
 ```

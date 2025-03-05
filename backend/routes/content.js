@@ -4,7 +4,7 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs').promises;
 const dirTree = require('directory-tree'); // Add this import
-
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 const VideoContent = require('../models/VideoContent');
 
 // Get directory tree
@@ -78,10 +78,8 @@ router.get('/file/:path(*)', async (req, res) => {
     content = content.replace(
       /!$$(.*?)$$$$(\.\/attachments\/[^)]+)$$/g,
       (match, altText, imagePath) => {
-        // Remove './' from the path
         const relativePath = imagePath.replace('./', '');
-        // Construct the full URL using the file's directory
-        const fullUrl = `http://localhost:5000/${fileDir}/${relativePath}`;
+        const fullUrl = `${API_URL}/${fileDir}/${relativePath}`;
         console.log('Image path transformed:', fullUrl);
         return `![${altText}](${fullUrl})`;
       }
