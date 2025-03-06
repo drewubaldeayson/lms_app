@@ -168,9 +168,17 @@ const Header = () => {
   return (
     <AppBar position="fixed">
       <Toolbar>
-        <Typography variant="h6" noWrap component="div">
+        <Button
+          color="inherit"
+          onClick={() => navigate('/')}
+          sx={{ 
+            textTransform: 'none',
+            fontSize: 'h6.fontSize',
+            fontWeight: 'bold'
+          }}
+        >
           Knowledge Base
-        </Typography>
+        </Button>
 
         <Search>
           <SearchIconWrapper>
