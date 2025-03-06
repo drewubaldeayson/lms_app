@@ -2,13 +2,11 @@
     "name": "knowledge_base",
     "version": "1.0.0",
     "scripts": {
-        "docker:build": "docker-compose build",
-        "docker:up": "docker-compose up",
-        "docker:down": "docker-compose down",
-        "docker:dev": "docker-compose -f docker-compose.dev.yml up",
-        "docker:prod": "docker-compose up -d",
-        "docker:logs": "docker-compose logs -f",
-
+        "setup:prod": "./setup-prod.sh",
+        "prod:up": "docker-compose up -d",
+        "prod:down": "docker-compose down",
+        "prod:logs": "docker-compose logs -f",
+        "prod:restart": "docker-compose restart",
 
         "dev:up": "docker-compose -f docker-compose.dev.yml up -d",
         "dev:down": "docker-compose -f docker-compose.dev.yml down",

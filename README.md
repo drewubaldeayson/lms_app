@@ -17,3 +17,16 @@ npm run dev:up       # Start the development environment
 npm run dev:logs     # Check the logs
 ```
 
+## Production Mode
+
+
+```
+chmod +x setup-prod.sh
+npm run setup:prod
+```
+
+## Additional Commands
+
+#### Rebuild and restart containers
+docker-compose down
+docker-compose up -d --build

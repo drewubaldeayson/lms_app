@@ -1,6 +1,6 @@
 # Software Dependencies
 
-## Software Dependencies
+## Dependencies Required
 - Node.js
 - React.js
 - Mongodb

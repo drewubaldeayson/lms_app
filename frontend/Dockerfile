@@ -2,9 +2,17 @@
 FROM node:16-alpine as build
 
 WORKDIR /app
-COPY package*.json ./
+
+# Create necessary directories and set permissions
+RUN mkdir -p /app/node_modules/.cache && \
+    chown -R node:node /app
+
+USER node
+
+COPY --chown=node:node package*.json ./
 RUN npm install
-COPY . .
+
+COPY --chown=node:node . .
 RUN npm run build
 
 FROM nginx:alpine

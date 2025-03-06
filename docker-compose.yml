@@ -1,3 +1,4 @@
+# docker-compose.yml (for production)
 version: '3.8'
 
 services:
@@ -21,7 +22,8 @@ services:
       - MONGODB_URI=mongodb://mongodb:27017/knowledge-base
       - JWT_SECRET=${JWT_SECRET}
     volumes:
-      - ./backend/markdown-files:/app/markdown-files
+      - ./backend/markdown-files:/app/markdown-files:ro
+      - /app/node_modules
     depends_on:
       - mongodb
 
