@@ -1,0 +1,19 @@
+# backend/Dockerfile.dev
+FROM node:16-alpine
+
+WORKDIR /app
+
+# Add node user and set ownership
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup && \
+    chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
+
+COPY --chown=appuser:appgroup package*.json ./
+RUN npm install
+
+COPY --chown=appuser:appgroup . .
+
+EXPOSE 5000
+CMD ["npm", "run", "dev"]

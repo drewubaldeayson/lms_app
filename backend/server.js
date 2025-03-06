@@ -14,6 +14,9 @@ const config = require('./config/config');
 
 const app = express();
 
+console.log('Current environment:', process.env.NODE_ENV);
+console.log('Using port:', config.port);
+
 // Connect to MongoDB
 connectDB();
 
@@ -36,5 +39,4 @@ app.use('/api/search', searchRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/users', userRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(config.port, () => console.log(`Server running in ${process.env.NODE_ENV} mode on port ${config.port}`));

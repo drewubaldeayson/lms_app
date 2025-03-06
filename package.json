@@ -1,11 +1,22 @@
 {
-    "name": "lms_app",
+    "name": "knowledge_base",
     "version": "1.0.0",
     "scripts": {
-        "setup": "./setup-dev.sh",
-        "deploy": "NODE_ENV=production ./deploy.sh",
-        "start:dev": "concurrently \"cd frontend && npm start\" \"cd backend && npm run dev\"",
-        "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+        "docker:build": "docker-compose build",
+        "docker:up": "docker-compose up",
+        "docker:down": "docker-compose down",
+        "docker:dev": "docker-compose -f docker-compose.dev.yml up",
+        "docker:prod": "docker-compose up -d",
+        "docker:logs": "docker-compose logs -f",
+
+
+        "dev:up": "docker-compose -f docker-compose.dev.yml up -d",
+        "dev:down": "docker-compose -f docker-compose.dev.yml down",
+        "dev:logs": "docker-compose -f docker-compose.dev.yml logs -f",
+        "dev:build": "docker-compose -f docker-compose.dev.yml up -d --build",
+        "dev:frontend-logs": "docker-compose -f docker-compose.dev.yml logs -f frontend",
+        "dev:backend-logs": "docker-compose -f docker-compose.dev.yml logs -f backend",
+        "dev:ps": "docker-compose -f docker-compose.dev.yml ps"
     },
     "devDependencies": {
         "concurrently": "^7.6.0"
