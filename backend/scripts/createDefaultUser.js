@@ -7,7 +7,8 @@ const User = require('../models/User');
 
 async function createDefaultUser() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://170.64.202.114:27017/knowledge-base');
+        const mongoUri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@mongodb:27017/knowledge-base?authSource=admin`;
+        await mongoose.connect(mongoUri);
         console.log('Connected to MongoDB');
 
         // Check if user already exists
