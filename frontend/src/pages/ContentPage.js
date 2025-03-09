@@ -13,7 +13,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
 const ContentPage = ({ setHeadings }) => {
   const { '*': path } = useParams();

@@ -1,7 +1,7 @@
 // frontend/src/services/api.service.js
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
 const getAuthHeader = () => ({
   headers: {

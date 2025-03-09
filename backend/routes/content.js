@@ -4,7 +4,7 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs').promises;
 const dirTree = require('directory-tree'); // Add this import
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 const VideoContent = require('../models/VideoContent');
 
 // Get directory tree

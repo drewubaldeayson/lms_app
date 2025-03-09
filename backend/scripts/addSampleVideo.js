@@ -25,7 +25,7 @@ const sampleVideos = [
 
 const addSampleVideos = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/knowledge-base');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://170.64.202.114:27017/knowledge-base');
     console.log('Connected to MongoDB');
 
     // Clear existing videos

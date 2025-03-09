@@ -17,7 +17,7 @@ const question = (query) => new Promise((resolve) => {
 const changePassword = async () => {
     try {
         // Connect to MongoDB
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/knowledge-base');
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://170.64.202.114:27017/knowledge-base');
         console.log('Connected to MongoDB');
 
         // Get new password
