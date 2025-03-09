@@ -22,12 +22,13 @@ docker-compose up -d mongodb
 echo "Waiting for MongoDB to start..."
 sleep 10
 
+# Start remaining services
+echo "Starting all services..."
+docker-compose up -d --build
+
 # Create initial admin user
 echo "Creating initial admin user..."
 docker-compose exec -T backend node scripts/createDefaultUser.js
 
-# Start remaining services
-echo "Starting all services..."
-docker-compose up -d --build
 
 echo "Production setup completed!"
