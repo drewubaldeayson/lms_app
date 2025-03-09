@@ -10,9 +10,9 @@ const defaultUser = {
 };
 
 async function createDefaultUser() {
-    try {
+    try { 
         // Log the connection string (remove sensitive info)
-        const connectionString = process.env.MONGODB_URI;
+        const connectionString = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@mongodb:27017/knowledge-base?authSource=admin`;
         console.log('Connecting to MongoDB with URI:', 
             connectionString.replace(/:([^:@]{1,}?)@/, ':****@'));
 
