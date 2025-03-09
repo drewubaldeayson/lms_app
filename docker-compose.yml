@@ -23,7 +23,7 @@ services:
       - "5000:5000"
     environment:
       - NODE_ENV=production
-      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb:27017/knowledge-base?authSource=admin&directConnection=true
+      - MONGODB_URI=mongodb://admin:admin@mongodb:27017/knowledge-base?authSource=admin&directConnection=true
       - JWT_SECRET=${JWT_SECRET}
     volumes:
       - ./backend/markdown-files:/app/markdown-files:ro
@@ -37,9 +37,14 @@ services:
     volumes:
       - mongodb_data:/data/db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
     command: mongod --auth
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/knowledge-base --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongodb_data:
