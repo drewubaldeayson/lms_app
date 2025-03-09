@@ -11,7 +11,7 @@ if [ ! -f .env ]; then
   cat > .env << EOL
 JWT_SECRET=jasodifjasoifjoajfodajfosidjfoiasdjfosaidfjosaifjiasof
 MONGO_USER=admin
-MONGO_PASSWORD=your-secure-password
+MONGO_PASSWORD=admin
 EOL
   echo "Created .env file. Please update with secure values."
 fi
