@@ -21,7 +21,10 @@ console.log('Using port:', config.port);
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: ['http://170.64.202.114', 'http://170.64.202.114:80'],
+    credentials: true
+}));
 app.use(express.json());
 
 app.use('/', express.static(path.join(__dirname, 'markdown-files')));
