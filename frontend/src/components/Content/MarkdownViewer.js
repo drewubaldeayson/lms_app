@@ -10,15 +10,15 @@ const MarkdownViewer = ({ content }) => {
     <Box sx={{ p: 2 }}>
       <ReactMarkdown
         components={{
-          p({ node, children, ...props }) {
+          blockquote({ node, children, ...props }) {
             const text = String(children[0] || '');
             if (text.startsWith('[!INFO]')) {
-              return <InfoBox>{text.replace('[!INFO]', '').trim()}</InfoBox>;
+              return <InfoBox>{children.slice(1)}</InfoBox>;
             }
             if (text.startsWith('[!WARNING]')) {
-              return <WarningBox>{text.replace('[!WARNING]', '').trim()}</WarningBox>;
+              return <WarningBox>{children.slice(1)}</WarningBox>;
             }
-            return <p {...props}>{children}</p>;
+            return <blockquote {...props}>{children}</blockquote>;
           },
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
