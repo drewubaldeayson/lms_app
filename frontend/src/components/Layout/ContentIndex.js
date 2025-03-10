@@ -68,12 +68,9 @@ const ContentIndex = ({ headings }) => {
       setActiveHeading(id);
     }
   };
-  const DRAWER_WIDTH = 308;
-
   return (
     <Paper
       sx={{
-        width: DRAWER_WIDTH,
         p: 2,
         position: 'sticky',
         top: 80,

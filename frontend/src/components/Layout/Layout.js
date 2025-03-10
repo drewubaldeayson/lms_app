@@ -5,6 +5,8 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import ContentIndex from './ContentIndex';
 
+const DRAWER_WIDTH = 308;
+
 const Layout = ({ children }) => {
   const [headings, setHeadings] = useState([]);
 
@@ -25,7 +27,7 @@ const Layout = ({ children }) => {
         <Box sx={{ flexGrow: 1 }}>
           {React.cloneElement(children, { setHeadings })}
         </Box>
-        <ContentIndex headings={headings} />
+        <ContentIndex headings={headings} sx={{ width: DRAWER_WIDTH }} />
       </Box>
     </Box>
   );

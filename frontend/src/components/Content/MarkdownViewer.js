@@ -11,11 +11,15 @@ const MarkdownViewer = ({ content }) => {
       <ReactMarkdown
         components={{
           p({ node, children, ...props }) {
-            // Check if the paragraph starts with [!INFO]
-            if (children[0] && children[0].startsWith('[!INFO]')) {
-              // Remove the [@INFO] tag and render the rest inside InfoBox
-              const infoContent = children[0].replace('[!INFO]', '').trim();
-              return <InfoBox>{infoContent}</InfoBox>;
+            const text = children[0] || '';
+            if (text.startsWith('[!INFO]')) {
+              return <InfoBox>{text.replace('[!INFO]', '').trim()}</InfoBox>;
+            }
+            if (text.startsWith('[!WARNING]')) {
+              return <WarningBox>{text.replace('[!WARNING]', '').trim()}</WarningBox>;
+            }
+            if (text.startsWith('[!CAUTION]')) {
+              return <CautionBox>{text.replace('[!CAUTION]', '').trim()}</CautionBox>;
             }
             return <p {...props}>{children}</p>;
           },
