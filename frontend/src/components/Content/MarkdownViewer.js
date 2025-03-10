@@ -10,22 +10,25 @@ const MarkdownViewer = ({ content }) => {
     <Box sx={{ p: 2 }}>
       <ReactMarkdown
         components={{
-          blockquote({ node, children, ...props }) {
-            const text = children.map(child => child.props.children).flat().join('');
-
-            if (text.startsWith('[!INFO]')) {
-              return <InfoBox>{children.slice(1)}</InfoBox>;
+          blockquote: ({ children }) => {
+            const firstLine = children[0]?.props?.children?.[0] || '';
+      
+            if (typeof firstLine === 'string') {
+              if (firstLine.startsWith('[!INFO]')) {
+                return <InfoBox>{children.slice(1).map(child => <React.Fragment>{child}</React.Fragment>)}</InfoBox>;
+              }
+              if (firstLine.startsWith('[!WARNING]')) {
+                return <WarningBox>{children.slice(1).map(child => <React.Fragment>{child}</React.Fragment>)}</WarningBox>;
+              }
+              if (firstLine.startsWith('[!CAUTION]')) {
+                return <CautionBox>{children.slice(1).map(child => <React.Fragment>{child}</React.Fragment>)}</CautionBox>;
+              }
+              if (firstLine.startsWith('[!NOTE]')) {
+                return <NoteBox>{children.slice(1).map(child => <React.Fragment>{child}</React.Fragment>)}</NoteBox>;
+              }
             }
-            if (text.startsWith('[!WARNING]')) {
-              return <WarningBox>{children.slice(1)}</WarningBox>;
-            }
-            if (text.startsWith('[!CAUTION]')) {
-              return <CautionBox>{children.slice(1)}</CautionBox>;
-            }
-            if (text.startsWith('[!NOTE]')) {
-              return <NoteBox>{children.slice(1)}</NoteBox>;
-            }
-            return <blockquote {...props}>{children}</blockquote>;
+      
+            return <blockquote>{children}</blockquote>;
           },
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
