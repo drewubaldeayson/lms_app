@@ -22,7 +22,7 @@ const IndexItem = styled(ListItem)(({ theme, active }) => ({
   }),
 }));
 
-const DRAWER_WIDTH = 308;
+
 
 const ContentIndex = ({ headings }) => {
   const [activeHeading, setActiveHeading] = useState('');
@@ -68,6 +68,7 @@ const ContentIndex = ({ headings }) => {
       setActiveHeading(id);
     }
   };
+  const DRAWER_WIDTH = 308;
 
   return (
     <Paper
