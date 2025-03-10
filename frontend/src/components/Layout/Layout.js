@@ -11,23 +11,25 @@ const Layout = ({ children }) => {
   const [headings, setHeadings] = useState([]);
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <Sidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          mt: 8,
-          display: 'flex',
-          gap: 2
-        }}
-      >
-        <Box sx={{ flexGrow: 1, width:'100%' }}>
-          {React.cloneElement(children, { setHeadings })}
+      <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        <Sidebar />
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            mt: 8,
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box sx={{ flexGrow: 1, maxWidth: `calc(100% - ${2 * DRAWER_WIDTH}px)`, overflow: 'auto' }}>
+            {React.cloneElement(children, { setHeadings })}
+          </Box>
+          <ContentIndex headings={headings} sx={{ width: DRAWER_WIDTH }} />
         </Box>
-        <ContentIndex headings={headings} sx={{ width: DRAWER_WIDTH }} />
       </Box>
     </Box>
   );

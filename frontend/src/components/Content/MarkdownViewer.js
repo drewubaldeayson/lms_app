@@ -12,14 +12,16 @@ const MarkdownViewer = ({ content }) => {
         components={{
           p({ node, children, ...props }) {
             const text = children[0] || '';
-            if (text.startsWith('[!INFO]')) {
-              return <InfoBox>{text.replace('[!INFO]', '').trim()}</InfoBox>;
-            }
-            if (text.startsWith('[!WARNING]')) {
-              return <WarningBox>{text.replace('[!WARNING]', '').trim()}</WarningBox>;
-            }
-            if (text.startsWith('[!CAUTION]')) {
-              return <CautionBox>{text.replace('[!CAUTION]', '').trim()}</CautionBox>;
+            if (typeof text === 'string') {
+              if (text.startsWith('[!INFO]')) {
+                return <InfoBox>{text.replace('[!INFO]', '').trim()}</InfoBox>;
+              }
+              if (text.startsWith('[!WARNING]')) {
+                return <WarningBox>{text.replace('[!WARNING]', '').trim()}</WarningBox>;
+              }
+              if (text.startsWith('[!CAUTION]')) {
+                return <CautionBox>{text.replace('[!CAUTION]', '').trim()}</CautionBox>;
+              }
             }
             return <p {...props}>{children}</p>;
           },
