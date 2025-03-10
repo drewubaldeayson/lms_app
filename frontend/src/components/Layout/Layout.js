@@ -14,22 +14,23 @@ const Layout = ({ children }) => {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
-        <Sidebar />
+        <Box sx={{ width: '25%', overflow: 'auto' }}>
+          <Sidebar />
+        </Box>
         <Box
           component="main"
           sx={{
-            flexGrow: 1,
+            width: '50%',
             p: 3,
             mt: 8,
-            display: 'flex',
+            overflow: 'auto',
           }}
         >
-          <Box sx={{ flexGrow: 1, maxWidth: `calc(100% - ${2 * DRAWER_WIDTH}px)`, overflow: 'auto' }}>
-            {React.cloneElement(children, { setHeadings })}
-          </Box>
-         
+          {React.cloneElement(children, { setHeadings })}
         </Box>
-        <ContentIndex headings={headings}/>
+        <Box sx={{ width: '25%', overflow: 'auto' }}>
+          <ContentIndex headings={headings} />
+        </Box>
       </Box>
     </Box>
   );
