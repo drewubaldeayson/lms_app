@@ -22,14 +22,14 @@ const Layout = ({ children }) => {
             p: 3,
             mt: 8,
             display: 'flex',
-            justifyContent: 'space-between',
           }}
         >
           <Box sx={{ flexGrow: 1, maxWidth: `calc(100% - ${2 * DRAWER_WIDTH}px)`, overflow: 'auto' }}>
             {React.cloneElement(children, { setHeadings })}
           </Box>
-          <ContentIndex headings={headings} sx={{ width: DRAWER_WIDTH }} />
+         
         </Box>
+        <ContentIndex headings={headings}/>
       </Box>
     </Box>
   );

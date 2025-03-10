@@ -75,6 +75,8 @@ const ContentIndex = ({ headings }) => {
         position: 'sticky',
         top: 80,
         maxHeight: 'calc(100vh - 100px)',
+        
+        flex: '0 0 auto',
         overflow: 'auto',
         borderLeft: '1px solid',
         borderColor: 'divider'
