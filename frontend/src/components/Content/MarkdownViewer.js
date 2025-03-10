@@ -18,9 +18,6 @@ const MarkdownViewer = ({ content }) => {
             if (text.startsWith('[!WARNING]')) {
               return <WarningBox>{text.replace('[!WARNING]', '').trim()}</WarningBox>;
             }
-            if (text.startsWith('[!CAUTION]')) {
-              return <CautionBox>{text.replace('[!CAUTION]', '').trim()}</CautionBox>;
-            }
             return <p {...props}>{children}</p>;
           },
           code({ node, inline, className, children, ...props }) {
