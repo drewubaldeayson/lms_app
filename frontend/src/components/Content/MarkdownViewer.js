@@ -18,6 +18,12 @@ const MarkdownViewer = ({ content }) => {
             if (text.startsWith('[!WARNING]')) {
               return <WarningBox>{children.slice(1)}</WarningBox>;
             }
+            if (text.startsWith('[!CAUTION]')) {
+              return <CautionBox>{children.slice(1)}</CautionBox>;
+            }
+            if (text.startsWith('[!NOTE]')) {
+              return <NoteBox>{children.slice(1)}</NoteBox>;
+            }
             return <blockquote {...props}>{children}</blockquote>;
           },
           code({ node, inline, className, children, ...props }) {
