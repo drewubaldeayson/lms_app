@@ -11,22 +11,19 @@ const MarkdownViewer = ({ content }) => {
       <ReactMarkdown
         components={{
           blockquote({ node, children, ...props }) {
-            const firstChild = children[0];
-            const text = firstChild?.props?.children?.[0] || '';
+            const text = children.map(child => child.props.children).flat().join('');
 
-            if (typeof text === 'string') {
-              if (text.startsWith('[!INFO]')) {
-                return <InfoBox>{children.slice(1)}</InfoBox>;
-              }
-              if (text.startsWith('[!WARNING]')) {
-                return <WarningBox>{children.slice(1)}</WarningBox>;
-              }
-              if (text.startsWith('[!CAUTION]')) {
-                return <CautionBox>{children.slice(1)}</CautionBox>;
-              }
-              if (text.startsWith('[!NOTE]')) {
-                return <NoteBox>{children.slice(1)}</NoteBox>;
-              }
+            if (text.startsWith('[!INFO]')) {
+              return <InfoBox>{children.slice(1)}</InfoBox>;
+            }
+            if (text.startsWith('[!WARNING]')) {
+              return <WarningBox>{children.slice(1)}</WarningBox>;
+            }
+            if (text.startsWith('[!CAUTION]')) {
+              return <CautionBox>{children.slice(1)}</CautionBox>;
+            }
+            if (text.startsWith('[!NOTE]')) {
+              return <NoteBox>{children.slice(1)}</NoteBox>;
             }
             return <blockquote {...props}>{children}</blockquote>;
           },
