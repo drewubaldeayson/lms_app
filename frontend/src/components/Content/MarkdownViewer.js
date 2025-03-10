@@ -11,7 +11,9 @@ const MarkdownViewer = ({ content }) => {
       <ReactMarkdown
         components={{
           blockquote({ node, children, ...props }) {
-            const text = children[0]?.props?.children || '';
+            const firstChild = children[0];
+            const text = firstChild?.props?.children?.[0] || '';
+
             if (typeof text === 'string') {
               if (text.startsWith('[!INFO]')) {
                 return <InfoBox>{children.slice(1)}</InfoBox>;
