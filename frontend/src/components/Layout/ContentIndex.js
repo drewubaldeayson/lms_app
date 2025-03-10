@@ -22,6 +22,8 @@ const IndexItem = styled(ListItem)(({ theme, active }) => ({
   }),
 }));
 
+const DRAWER_WIDTH = 308;
+
 const ContentIndex = ({ headings }) => {
   const [activeHeading, setActiveHeading] = useState('');
 
@@ -70,7 +72,7 @@ const ContentIndex = ({ headings }) => {
   return (
     <Paper
       sx={{
-        width: 250,
+        width: DRAWER_WIDTH,
         p: 2,
         position: 'sticky',
         top: 80,

@@ -145,8 +145,8 @@ const ContentPage = ({ setHeadings }) => {
     return (
       <Box 
         sx={{ 
-          display: 'inline-block',
-          maxWidth: '100%',
+          display: 'flex',
+          justifyContent: 'center',
           my: 2,
           cursor: 'pointer'
         }}

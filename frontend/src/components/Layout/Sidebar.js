@@ -26,7 +26,7 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
-const DRAWER_WIDTH = 280;
+const DRAWER_WIDTH = 308;
 
 const TreeNode = ({ node, level = 0, selectedPath, onSelect }) => {
     const [isExpanded, setIsExpanded] = useState(true);
