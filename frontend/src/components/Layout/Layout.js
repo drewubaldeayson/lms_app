@@ -28,7 +28,9 @@ const Layout = ({ children }) => {
         >
           {React.cloneElement(children, { setHeadings })}
         </Box>
-        <Box sx={{ width: '25%', overflow: 'auto' }}>
+        <Box sx={{ width: '25%', overflow: 'auto', position: 'sticky',
+            top: 0,
+            height: '100vh'}}>
           <ContentIndex headings={headings} />
         </Box>
       </Box>

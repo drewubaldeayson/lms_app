@@ -11,17 +11,15 @@ const MarkdownViewer = ({ content }) => {
       <ReactMarkdown
         components={{
           p({ node, children, ...props }) {
-            const text = children[0] || '';
-            if (typeof text === 'string') {
-              if (text.startsWith('[!INFO]')) {
-                return <InfoBox>{text.replace('[!INFO]', '').trim()}</InfoBox>;
-              }
-              if (text.startsWith('[!WARNING]')) {
-                return <WarningBox>{text.replace('[!WARNING]', '').trim()}</WarningBox>;
-              }
-              if (text.startsWith('[!CAUTION]')) {
-                return <CautionBox>{text.replace('[!CAUTION]', '').trim()}</CautionBox>;
-              }
+            const text = String(children[0] || '');
+            if (text.startsWith('[!INFO]')) {
+              return <InfoBox>{text.replace('[!INFO]', '').trim()}</InfoBox>;
+            }
+            if (text.startsWith('[!WARNING]')) {
+              return <WarningBox>{text.replace('[!WARNING]', '').trim()}</WarningBox>;
+            }
+            if (text.startsWith('[!CAUTION]')) {
+              return <CautionBox>{text.replace('[!CAUTION]', '').trim()}</CautionBox>;
             }
             return <p {...props}>{children}</p>;
           },
@@ -41,7 +39,7 @@ const MarkdownViewer = ({ content }) => {
                 {children}
               </code>
             );
-          }
+          },
         }}
       >
         {content}
