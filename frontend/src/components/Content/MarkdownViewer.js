@@ -10,27 +10,39 @@ const MarkdownViewer = ({ content }) => {
     <Box sx={{ p: 2 }}>
       <ReactMarkdown
         components={{
-          blockquote: ({ children }) => {
-            const textContent = children
-                .map(child => typeof child === 'string' ? child : child?.props?.children?.join(''))
-                .join('')
-                .trim();
-        
-            if (textContent.startsWith('[!INFO]')) {
-                return <InfoBox>{textContent.replace('[!INFO]', '').trim()}</InfoBox>;
+          blockquote: ({ node, children, ...props }) => {
+            // Convert children to a flat array so we can inspect each paragraph easily
+            const elements = React.Children.toArray(children);
+          
+            // If there's at least one child, and it's a valid React element
+            if (elements.length > 0 && React.isValidElement(elements[0])) {
+              // Try to extract the text from the first child (paragraph)
+              const firstChildText = elements[0].props.children?.[0];
+          
+              if (typeof firstChildText === 'string') {
+                // Check if the first paragraph is exactly one of the markers
+                switch (firstChildText.trim()) {
+                  case '[!INFO]':
+                    return <InfoBox>{elements.slice(1)}</InfoBox>;
+          
+                  case '[!WARNING]':
+                    return <WarningBox>{elements.slice(1)}</WarningBox>;
+          
+                  case '[!CAUTION]':
+                    return <CautionBox>{elements.slice(1)}</CautionBox>;
+          
+                  case '[!NOTE]':
+                    return <NoteBox>{elements.slice(1)}</NoteBox>;
+          
+                  default:
+                    break;
+                }
+              }
             }
-            if (textContent.startsWith('[!WARNING]')) {
-                return <WarningBox>{textContent.replace('[!WARNING]', '').trim()}</WarningBox>;
-            }
-            if (textContent.startsWith('[!CAUTION]')) {
-                return <CautionBox>{textContent.replace('[!CAUTION]', '').trim()}</CautionBox>;
-            }
-            if (textContent.startsWith('[!NOTE]')) {
-                return <NoteBox>{textContent.replace('[!NOTE]', '').trim()}</NoteBox>;
-            }
-        
-            return <blockquote>{children}</blockquote>;
-        },
+          
+            // If no match, just render a normal blockquote
+            return <blockquote {...props}>{children}</blockquote>;
+          },
         
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
