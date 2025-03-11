@@ -11,25 +11,27 @@ const MarkdownViewer = ({ content }) => {
       <ReactMarkdown
         components={{
           blockquote: ({ children }) => {
-            const firstLine = children[0]?.props?.children?.[0] || '';
-      
-            if (typeof firstLine === 'string') {
-              if (firstLine.startsWith('[!INFO]')) {
-                return <InfoBox>{children.slice(1).map(child => <React.Fragment>{child}</React.Fragment>)}</InfoBox>;
-              }
-              if (firstLine.startsWith('[!WARNING]')) {
-                return <WarningBox>{children.slice(1).map(child => <React.Fragment>{child}</React.Fragment>)}</WarningBox>;
-              }
-              if (firstLine.startsWith('[!CAUTION]')) {
-                return <CautionBox>{children.slice(1).map(child => <React.Fragment>{child}</React.Fragment>)}</CautionBox>;
-              }
-              if (firstLine.startsWith('[!NOTE]')) {
-                return <NoteBox>{children.slice(1).map(child => <React.Fragment>{child}</React.Fragment>)}</NoteBox>;
-              }
+            const textContent = children
+                .map(child => typeof child === 'string' ? child : child?.props?.children?.join(''))
+                .join('')
+                .trim();
+        
+            if (textContent.startsWith('[!INFO]')) {
+                return <InfoBox>{textContent.replace('[!INFO]', '').trim()}</InfoBox>;
             }
-      
+            if (textContent.startsWith('[!WARNING]')) {
+                return <WarningBox>{textContent.replace('[!WARNING]', '').trim()}</WarningBox>;
+            }
+            if (textContent.startsWith('[!CAUTION]')) {
+                return <CautionBox>{textContent.replace('[!CAUTION]', '').trim()}</CautionBox>;
+            }
+            if (textContent.startsWith('[!NOTE]')) {
+                return <NoteBox>{textContent.replace('[!NOTE]', '').trim()}</NoteBox>;
+            }
+        
             return <blockquote>{children}</blockquote>;
-          },
+        }
+        
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
             return !inline && match ? (
