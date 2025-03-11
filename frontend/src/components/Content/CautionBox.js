@@ -6,7 +6,7 @@ const CautionBox = ({ children }) => (
   <Box
     sx={{
       bgcolor: '#fff8e1', // Light yellow
-      border: '1px solid #ffe082',
+      border: '1px solidrgb(255, 130, 130)',
       borderRadius: 2,
       p: 2,
       my: 2,
