@@ -17,7 +17,7 @@ import CautionBox from '../components/Content/CautionBox';
 import WarningBox from '../components/Content/WarningBox';
 import NoteBox from '../components/Content/NoteBox';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
 const ContentPage = ({ setHeadings }) => {
   const { '*': path } = useParams();
