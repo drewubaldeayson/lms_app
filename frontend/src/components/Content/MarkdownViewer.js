@@ -11,23 +11,33 @@ const MarkdownViewer = ({ content }) => {
       <ReactMarkdown
         components={{
           blockquote({ node, children, ...props }) {
-            // Convert to an array so we can easily inspect each paragraph
-            const elements = React.Children.toArray(children);
-  
-            // If we have at least one paragraph, check its text
-            if (elements.length > 0 && React.isValidElement(elements[0])) {
-              const firstChildText = elements[0].props.children?.[0];
-              if (typeof firstChildText === 'string') {
-                // Check if the line is exactly "[!INFO]"
-                if (firstChildText.trim() === '[!INFO]') {
-                  // Render all paragraphs except the first one inside an InfoBox
-                  return <InfoBox>{elements.slice(1)}</InfoBox>;
+            let firstText = '';
+            if (children && children.length > 0) {
+              const firstChild = children[0];
+              if (firstChild && firstChild.props && firstChild.props.children) {
+                const childContent = firstChild.props.children;
+                if (Array.isArray(childContent)) {
+                firstText = childContent.join('');
+                } else {
+                firstText = childContent;
                 }
-                // You can add more checks for [!WARNING], etc.
               }
             }
-  
-            // If none of the custom markers matched, just render a normal blockquote
+
+            const trimmed = firstText.trim();
+            if (trimmed.startsWith('[!INFO]')) {
+              return <InfoBox>{children.slice(1)}</InfoBox>;
+            }
+            if (trimmed.startsWith('[!WARNING]')) {
+              return <WarningBox>{children.slice(1)}</WarningBox>;
+            }
+            if (trimmed.startsWith('[!CAUTION]')) {
+              return <CautionBox>{children.slice(1)}</CautionBox>;
+            }
+            if (trimmed.startsWith('[!NOTE]')) {
+              return <NoteBox>{children.slice(1)}</NoteBox>;
+            }
+            // Otherwise, render a normal blockquote.
             return <blockquote {...props}>{children}</blockquote>;
           },
         
