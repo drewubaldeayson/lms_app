@@ -10,37 +10,24 @@ const MarkdownViewer = ({ content }) => {
     <Box sx={{ p: 2 }}>
       <ReactMarkdown
         components={{
-          blockquote: ({ node, children, ...props }) => {
-            // Convert children to a flat array so we can inspect each paragraph easily
+          blockquote({ node, children, ...props }) {
+            // Convert to an array so we can easily inspect each paragraph
             const elements = React.Children.toArray(children);
-          
-            // If there's at least one child, and it's a valid React element
+  
+            // If we have at least one paragraph, check its text
             if (elements.length > 0 && React.isValidElement(elements[0])) {
-              // Try to extract the text from the first child (paragraph)
               const firstChildText = elements[0].props.children?.[0];
-          
               if (typeof firstChildText === 'string') {
-                // Check if the first paragraph is exactly one of the markers
-                switch (firstChildText.trim()) {
-                  case '[!INFO]':
-                    return <InfoBox>{elements.slice(1)}</InfoBox>;
-          
-                  case '[!WARNING]':
-                    return <WarningBox>{elements.slice(1)}</WarningBox>;
-          
-                  case '[!CAUTION]':
-                    return <CautionBox>{elements.slice(1)}</CautionBox>;
-          
-                  case '[!NOTE]':
-                    return <NoteBox>{elements.slice(1)}</NoteBox>;
-          
-                  default:
-                    break;
+                // Check if the line is exactly "[!INFO]"
+                if (firstChildText.trim() === '[!INFO]') {
+                  // Render all paragraphs except the first one inside an InfoBox
+                  return <InfoBox>{elements.slice(1)}</InfoBox>;
                 }
+                // You can add more checks for [!WARNING], etc.
               }
             }
-          
-            // If no match, just render a normal blockquote
+  
+            // If none of the custom markers matched, just render a normal blockquote
             return <blockquote {...props}>{children}</blockquote>;
           },
         
