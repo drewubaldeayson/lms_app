@@ -27,7 +27,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.use('/', express.static(path.join(__dirname, 'markdown-files')));
+app.use('/api/content', express.static(path.join(__dirname, 'markdown-files')));
 
 // Log all requests (for debugging)
 app.use((req, res, next) => {
