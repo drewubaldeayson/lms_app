@@ -79,7 +79,8 @@ router.get('/file/:path(*)', async (req, res) => {
       /!$$(.*?)$$$$(\.\/attachments\/[^)]+)$$/g,
       (match, altText, imagePath) => {
         const relativePath = imagePath.replace('./', '');
-        const fullUrl = `${API_URL}/${fileDir}/${relativePath}`;
+        const encodedPath = encodeURIComponent(relativePath);
+        const fullUrl = `${API_URL}/${fileDir}/${encodedPath}`;
         console.log('Image path transformed:', fullUrl);
         return `![${altText}](${fullUrl})`;
       }
