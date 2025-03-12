@@ -147,51 +147,53 @@ const ContentPage = ({ setHeadings }) => {
 
   const ImageComponent = ({ src, alt }) => {
     const [imageError, setImageError] = useState(false);
-    const { '*': currentPath } = useParams(); 
-
+    const { '*': currentPath } = useParams();
+  
     const handleClick = () => {
       setSelectedImage(src);
     };
-
+  
     // Transform the relative image path to absolute URL
     const getImageUrl = (relativePath) => {
       if (relativePath.startsWith('http')) {
         return relativePath;
       }
-      
+  
       // Get the directory of the current markdown file
       const currentDir = currentPath.split('/').slice(0, -1).join('/');
-      
+  
       // Remove './' from the relative path
       const cleanPath = relativePath.replace('./', '');
-      
-      // Construct the full URL
-      return `${API_URL}/${currentDir}/${cleanPath}`;
+  
+      // Construct the full URL and encode it
+      const fullPath = `${API_URL}/${currentDir}/${cleanPath}`;
+      return encodeURI(fullPath);
     };
-
+  
     const imageUrl = getImageUrl(src);
     console.log('Original src:', src);
     console.log('Transformed URL:', imageUrl);
-
-
+  
     if (imageError) {
       return (
-        <Box sx={{ 
-          p: 2, 
-          border: '1px solid #ccc', 
-          borderRadius: '4px',
-          color: 'error.white',
-          bgcolor: 'error.light',
-          my: 2
-        }}>
+        <Box
+          sx={{
+            p: 2,
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            color: 'error.white',
+            bgcolor: 'error.light',
+            my: 2
+          }}
+        >
           Failed to load image: {alt}
         </Box>
       );
     }
-
+  
     return (
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           display: 'flex',
           justifyContent: 'center',
           my: 2,
