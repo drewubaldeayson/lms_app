@@ -166,7 +166,7 @@ const ContentPage = ({ setHeadings }) => {
       const cleanPath = relativePath.replace('./', '');
   
       // Construct the full URL and encode it
-      const fullPath = `${API_URL}/${currentDir}/${cleanPath}`;
+      const fullPath = `${API_URL}/api/content/${currentDir}/${cleanPath}`;
       return encodeURI(fullPath);
     };
   
