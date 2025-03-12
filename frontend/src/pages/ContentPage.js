@@ -1,5 +1,5 @@
 // frontend/src/pages/ContentPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, CircularProgress, Alert, Paper, Typography, Modal, IconButton,
   TextField, Button, Snackbar } from '@mui/material';
@@ -7,6 +7,8 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import VideoPlayer from '../components/Content/VideoPlayer';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import html2pdf from 'html2pdf.js';
 
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
@@ -30,6 +32,8 @@ const ContentPage = ({ setHeadings }) => {
   const [saveMessage, setSaveMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const contentRef = useRef();
   
   
 
@@ -101,6 +105,45 @@ const ContentPage = ({ setHeadings }) => {
     setEditableContent(content);
   };
 
+
+  const handleExport = () => {
+    setExporting(true);
+    const element = contentRef.current;
+
+    // Wait for images to load
+    const images = element.getElementsByTagName('img');
+    const imageLoadPromises = Array.from(images).map((img) => {
+      return new Promise((resolve) => {
+        if (img.complete) {
+          console.log(`Image loaded: ${img.src}`);
+          resolve();
+        } else {
+          img.onload = () => {
+            console.log(`Image loaded: ${img.src}`);
+            resolve();
+          };
+          img.onerror = () => {
+            console.error(`Image failed to load: ${img.src}`);
+            resolve();
+          };
+        }
+      });
+    });
+
+    Promise.all(imageLoadPromises).then(() => {
+      const opt = {
+        margin: 1,
+        filename: `${path.split('/').pop().replace('.md', '.pdf')}`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true }, // Enable CORS
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().from(element).set(opt).save().finally(() => {
+        setExporting(false);
+      });
+    });
+  };
 
   const ImageComponent = ({ src, alt }) => {
     const [imageError, setImageError] = useState(false);
@@ -227,8 +270,20 @@ const ContentPage = ({ setHeadings }) => {
           )}
       </Box> */}
 
+      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1 }}>
+        <IconButton onClick={handleExport} color="primary" disabled={exporting}>
+          <PictureAsPdfIcon />
+        </IconButton>
+        {exporting && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+            <CircularProgress />
+            <span style={{ marginLeft: '10px' }}>Generating PDF...</span>
+          </Box>
+        )}
+      </Box>
+
       {/* Markdown content */}
-      <Paper sx={{ p: 3 }}>
+      <Paper sx={{ p: 3 }}  ref={contentRef}>
       {isEditing ? (
           <TextField
             fullWidth
@@ -242,10 +297,11 @@ const ContentPage = ({ setHeadings }) => {
               }
             }}
           />
-        ) :  <ReactMarkdown
+        ) :  
+        
+        <ReactMarkdown
           components={{
             blockquote: ({ node, children, ...props }) => {
-              console.log("BLOCKQUOTE: ", children);
               // Helper function to extract text from children recursively
               const extractText = (child) => {
                 if (typeof child === 'string') {
