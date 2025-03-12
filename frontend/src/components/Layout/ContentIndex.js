@@ -107,7 +107,7 @@ const ContentIndex = ({ headings }) => {
               primary={heading.text}
               sx={{
                 '& .MuiTypography-root': {
-                  fontSize: `${1 - (heading.level * 0.1)}rem`,
+                  fontSize: '1rem', 
                   fontWeight: activeHeading === heading.id ? 500 : 400,
                   color: activeHeading === heading.id ? 'primary.main' : 'text.primary'
                 }

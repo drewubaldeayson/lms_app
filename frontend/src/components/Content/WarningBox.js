@@ -11,11 +11,15 @@ const WarningBox = ({ children }) => (
       p: 2,
       my: 2,
       display: 'flex',
-      alignItems: 'flex-start',
     }}
   >
-    <WarningOutlinedIcon sx={{ mr: 1, color: '#ffa726' }} />
-    <Typography variant="body1" component="div">
+    <WarningOutlinedIcon sx={{ 
+      mr: 1, 
+      color: '#ffa726',
+      alignSelf: "flex-start", // Align icon to the top
+      mt: "16px", // Small adjustment for better alignment
+    }} />
+    <Typography variant="body1" component="div" sx={{ lineHeight: 1.6 }}>
       {children}
     </Typography>
   </Box>

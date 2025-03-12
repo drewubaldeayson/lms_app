@@ -90,7 +90,7 @@ const SearchHighlight = styled('span')(({ theme }) => ({
     color: theme.palette.primary.main,
 }));
 
-const Header = () => {
+const Header = (props) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -166,9 +166,13 @@ const Header = () => {
   const open = Boolean(anchorEl) && searchResults.length > 0;
 
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" sx={{ 
+      backgroundColor: '#8a1119', 
+      // other styles 
+    }}>
       <Toolbar>
-        <Button
+        {props.logoComponent}
+        {/* <Button
           color="inherit"
           onClick={() => navigate('/')}
           sx={{ 
@@ -178,7 +182,7 @@ const Header = () => {
           }}
         >
           Knowledge Base
-        </Button>
+        </Button> */}
 
         <Search>
           <SearchIconWrapper>

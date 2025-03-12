@@ -29,18 +29,36 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 const DRAWER_WIDTH = 350;
 
 const TreeNode = ({ node, level = 0, selectedPath, onSelect }) => {
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
     const isFile = !node.children;
     const isMarkdown = node.name.endsWith('.md');
     const isAttachment = !isMarkdown && isFile;
+
+    const shouldRenderNode = () => {
+        const excludedFolders = ['attachments'];
+        return !excludedFolders.includes(node.name);
+    };
+
+    // If node should not be rendered, return null
+    if (!shouldRenderNode()) {
+        return null;
+    }
+
+
+    // Skip rendering the "markdown-files" node itself
+  if (node.name === 'markdown-files') {
+    return node.children.map((child, index) => (
+      <TreeNode
+        key={index}
+        node={child}
+        level={level} // Keep the same level as the parent
+        selectedPath={selectedPath}
+        onSelect={onSelect}
+      />
+    ));
+  }
   
     const handleClick = () => {
-        // if (isFile) {
-        //   // Use the path directly from the node
-        //   onSelect(node.path);
-        // } else {
-        //   setIsExpanded(!isExpanded);
-        // }
         if (node.children) {
           setIsExpanded(!isExpanded);
         } else if (isMarkdown) {

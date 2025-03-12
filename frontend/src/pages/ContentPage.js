@@ -210,7 +210,7 @@ const ContentPage = ({ setHeadings }) => {
       )} */}
 
 
-      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1 }}>
+      {/* <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1 }}>
           {!isEditing ? (
             <IconButton onClick={handleEdit} color="primary">
               <EditIcon />
@@ -225,7 +225,7 @@ const ContentPage = ({ setHeadings }) => {
               </IconButton>
             </Box>
           )}
-      </Box>
+      </Box> */}
 
       {/* Markdown content */}
       <Paper sx={{ p: 3 }}>
