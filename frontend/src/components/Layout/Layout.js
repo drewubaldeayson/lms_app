@@ -7,11 +7,12 @@ import ContentIndex from './ContentIndex';
 import PrintIcon from '@mui/icons-material/Print';
 import CompanyLogo from '../../assets/images/logo.png'; // Import your logo
 
+import { useNavigate } from 'react-router-dom';
 const DRAWER_WIDTH = 350;
 
 const Layout = ({ children }) => {
   const [headings, setHeadings] = useState([]);
-
+  const navigate = useNavigate();
 
 
   return (
@@ -26,6 +27,7 @@ const Layout = ({ children }) => {
           <img 
             src={CompanyLogo} 
             alt="Knowledge Base Logo" 
+            onClick={() => navigate('/')}
             style={{ 
               height: 40, 
               width: 'auto', 
