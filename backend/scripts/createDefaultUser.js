@@ -32,6 +32,7 @@ async function createDefaultUser() {
         
         if (existingUser) {
             console.log('Default user already exists');
+            createTrainingUser();
             return;
         }
 
@@ -49,6 +50,9 @@ async function createDefaultUser() {
         console.log('Default user created successfully');
     } catch (error) {
         console.error('Error creating default user:', error);
+    } finally {
+        await mongoose.disconnect();
+        console.log('Disconnected from MongoDB');
     }
 }
 
