@@ -21,6 +21,9 @@ import NoteBox from '../components/Content/NoteBox';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
+
+
+
 const ContentPage = ({ setHeadings }) => {
   const { '*': path } = useParams();
   const [content, setContent] = useState('');
@@ -112,42 +115,64 @@ const ContentPage = ({ setHeadings }) => {
 
     // Wait for images to load
     const images = element.getElementsByTagName('img');
+
+
     const imageLoadPromises = Array.from(images).map((img) => {
+      // If the image is already a data URL, there's nothing to do.
+      if (img.src.startsWith('data:')) {
+        return Promise.resolve();
+      }
+
       return new Promise((resolve) => {
-        if (img.complete) {
-          console.log(`Image loaded: ${img.src}`);
+        // Fetch the image as a blob
+        fetch(img.src, { mode: 'cors' })
+        .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.blob();
+        })
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+          // Replace the image’s src with the base64 URL
+          img.src = reader.result;
           resolve();
-        } else {
-          img.onload = () => {
-            console.log(`Image loaded: ${img.src}`);
-            resolve();
           };
-          img.onerror = () => {
-            console.error(`Image failed to load: ${img.src}`);
+          reader.onerror = () => {
+            console.error('Error reading blob as data URL for', img.src);
             resolve();
-          };
-        }
+            };
+            reader.readAsDataURL(blob);
+            })
+            .catch(error => {
+            console.error('Error fetching image for pdf export', error);
+            resolve();
+            });
       });
     });
 
     Promise.all(imageLoadPromises).then(() => {
-      const opt = {
-        margin: 1,
-        filename: `${path.split('/').pop().replace('.md', '.pdf')}`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true }, // Enable CORS
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-
-      html2pdf().from(element).set(opt).save().finally(() => {
-        setExporting(false);
-      });
+      // Optionally add a slight delay to ensure the DOM updates
+      setTimeout(() => {
+        const opt = {
+          margin: 1,
+          filename: `${path.split('/').pop().replace('.md', '.pdf')}`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, allowTaint: false, logging: true },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+  
+  
+        html2pdf().from(element).set(opt).save().finally(() => {
+          setExporting(false);
+        });
+      }, 500);
     });
   };
 
   const ImageComponent = ({ src, alt }) => {
     const [imageError, setImageError] = useState(false);
     const { '*': currentPath } = useParams();
+    const [dataUrl, setDataUrl] = useState(null);
   
     const handleClick = () => {
       setSelectedImage(src);
@@ -173,6 +198,35 @@ const ContentPage = ({ setHeadings }) => {
     const imageUrl = getImageUrl(src);
     console.log('Original src:', src);
     console.log('Transformed URL:', imageUrl);
+
+    useEffect(() => {
+      const fetchImageAsBase64 = async () => {
+      try {
+      const response = await fetch(imageUrl, { mode: 'cors' });
+      if (!response.ok) {
+      }
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.onloadend = () => {
+      setDataUrl(reader.result);
+      setLoading(false);
+      };
+      reader.onerror = (err) => {
+      console.error('Error reading blob as data URL', err);
+      setError(true);
+      setLoading(false);
+      };
+      reader.readAsDataURL(blob);
+      } catch (err) {
+      console.error('Error converting image to base64', err);
+      setError(true);
+      setLoading(false);
+      }
+      };
+      fetchImageAsBase64();
+
+    }, [imageUrl])
+
   
     if (imageError) {
       return (
@@ -201,7 +255,7 @@ const ContentPage = ({ setHeadings }) => {
         }}
       >
         <img
-          src={imageUrl}
+          src={dataUrl}
           alt={alt}
           onClick={handleClick}
           // crossOrigin="anonymous"
@@ -212,7 +266,7 @@ const ContentPage = ({ setHeadings }) => {
             border: '1px solid #eee'
           }}
           onError={(e) => {
-            console.error('Image failed to load:', imageUrl);
+            console.error('Image failed to load:', dataUrl);
             setImageError(true);
           }}
         />
