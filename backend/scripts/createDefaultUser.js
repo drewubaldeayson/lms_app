@@ -49,9 +49,6 @@ async function createDefaultUser() {
         console.log('Default user created successfully');
     } catch (error) {
         console.error('Error creating default user:', error);
-    } finally {
-        await mongoose.disconnect();
-        console.log('Disconnected from MongoDB');
     }
 }
 
