@@ -204,7 +204,7 @@ const ContentPage = ({ setHeadings }) => {
           src={imageUrl}
           alt={alt}
           onClick={handleClick}
-          crossOrigin="anonymous"
+          // crossOrigin="anonymous"
           style={{
             maxWidth: '100%',
             height: 'auto',
