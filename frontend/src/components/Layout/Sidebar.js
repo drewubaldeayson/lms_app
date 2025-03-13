@@ -74,9 +74,7 @@ const TreeNode = ({ node, level = 0, selectedPath, onSelect }) => {
     };
   
     const displayName = node.name
-      .replace(/\.md$/, '')
-      .replace(/^\d+-/, '')
-      .replace(/-/g, ' ');
+    .replace(/.md$/, '');
   
     return (
       <>
@@ -95,9 +93,9 @@ const TreeNode = ({ node, level = 0, selectedPath, onSelect }) => {
           <ListItemIcon>
             {getIcon()}
           </ListItemIcon>
-          <Tooltip title={node.name} placement="right">
+          <Tooltip title={displayName} placement="right">
             <ListItemText 
-              primary={node.name}
+              primary={displayName}
               sx={{
                 opacity: isAttachment ? 0.6 : 1
               }}

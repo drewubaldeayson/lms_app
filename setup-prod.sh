@@ -30,5 +30,9 @@ docker-compose up -d --build
 echo "Creating initial admin user..."
 docker-compose exec -T backend node scripts/createDefaultUser.js
 
+# Creating training user
+echo "Creating training user..."
+docker-compose exec -T backend node scripts/addNewUser.js
+
 
 echo "Production setup completed!"

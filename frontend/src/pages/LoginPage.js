@@ -12,6 +12,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import CompanyLogo from '../assets/images/login-logo.png'; 
+
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
@@ -57,15 +59,23 @@ const LoginPage = () => {
     };
 
     return (
-        <Box sx={{ 
-            display: 'flex', 
+         <Box
+            sx={{
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
             justifyContent: 'center', 
             alignItems: 'center', 
-            height: '100vh',
             bgcolor: 'background.default' 
-        }}>
+            }}
+        >
+       
+            
+            <Box sx={{ textAlign: 'center', mt: 2, mb:5 }}>
+                <img src={CompanyLogo} alt="Logo" style={{ width: '350px' }} />
+            </Box>
             <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: '400px' }}>
-                <Typography variant="h5" sx={{ mb: 3 }}>
+                <Typography variant="h5" align="center" sx={{ mb: 3 }}>
                     Knowledge Base Login
                 </Typography>
                 
