@@ -9,6 +9,11 @@ const defaultUser = {
     password: 'admin123'
 };
 
+const trainingUser = {
+    username: 'training',
+    password: 'Muli-training-101'
+};
+
 async function createDefaultUser() {
     try { 
 
@@ -50,4 +55,47 @@ async function createDefaultUser() {
     }
 }
 
+async function createTrainingUser() {
+    try { 
+
+        // Log the connection string (remove sensitive info)
+        const connectionString = `mongodb://admin:admin@mongodb:27017/?directConnection=true&authSource=admin`;
+
+
+        console.log('Connecting to MongoDB with URI:', 
+            connectionString.replace(/:([^:@]{1,}?)@/, ':****@'));
+
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log('Connected to MongoDB');
+        
+        // Check if user already exists
+        const existingUser = await User.findOne({ username: trainingUser.username });
+        
+        if (existingUser) {
+            console.log('Training user already exists');
+            return;
+        }
+
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(trainingUser.password, salt);
+
+        // Create new user
+        const user = new User({
+            username: trainingUser.username,
+            password: hashedPassword
+        });
+
+        await user.save();
+        console.log('Training user created successfully');
+    } catch (error) {
+        console.error('Error creating Training user:', error);
+    } finally {
+        await mongoose.disconnect();
+        console.log('Disconnected from MongoDB');
+    }
+}
+
 createDefaultUser();
+
+createTrainingUser();
