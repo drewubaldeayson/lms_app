@@ -97,6 +97,6 @@ async function createTrainingUser() {
     }
 }
 
-createDefaultUser();
+// createDefaultUser();
 
 createTrainingUser();
