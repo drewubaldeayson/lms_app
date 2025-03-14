@@ -122,33 +122,32 @@ const ContentPage = ({ setHeadings }) => {
       if (img.src.startsWith('data:')) {
         return Promise.resolve();
       }
-
-      return new Promise((resolve) => {
-        // Fetch the image as a blob
-        fetch(img.src, { mode: 'cors' })
-        .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        return response.blob();
-        })
-        .then(blob => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-          // Replace the image’s src with the base64 URL
-          img.src = reader.result;
+    return new Promise((resolve) => {
+      // Fetch the image as a blob
+      fetch(img.src, { mode: 'cors' })
+      .then(response => {
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      return response.blob();
+      })
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+        // Replace the image’s src with the base64 URL
+        img.src = reader.result;
+        resolve();
+        };
+        reader.onerror = () => {
+          console.error('Error reading blob as data URL for', img.src);
           resolve();
           };
-          reader.onerror = () => {
-            console.error('Error reading blob as data URL for', img.src);
-            resolve();
-            };
-            reader.readAsDataURL(blob);
-            })
-            .catch(error => {
-            console.error('Error fetching image for pdf export', error);
-            resolve();
-            });
-      });
+          reader.readAsDataURL(blob);
+          })
+          .catch(error => {
+          console.error('Error fetching image for pdf export', error);
+          resolve();
+          });
     });
+  });
 
     Promise.all(imageLoadPromises).then(() => {
       // Optionally add a slight delay to ensure the DOM updates
@@ -355,7 +354,7 @@ const ContentPage = ({ setHeadings }) => {
             }}
           />
         ) :  
-        
+        <div style={{ fontFamily: 'Calibri, sans-serif' }}>
         <ReactMarkdown
           components={{
             blockquote: ({ node, children, ...props }) => {
@@ -385,6 +384,7 @@ const ContentPage = ({ setHeadings }) => {
                   const contentWithoutMarker = textContent.slice(marker.length).trim();
                   return (
                     <Component>
+                      <div style={{ fontFamily: 'Calibri, sans-serif' }}>
                       <ReactMarkdown
                       components={{ 
                         code({ node, inline, className, children, ...props }) {
@@ -437,6 +437,7 @@ const ContentPage = ({ setHeadings }) => {
                         ),
                       
                       }}>{contentWithoutMarker }</ReactMarkdown>
+                      </div>
                     </Component>
                   );
                 }
@@ -497,7 +498,7 @@ const ContentPage = ({ setHeadings }) => {
           }}
         >
           {content}
-        </ReactMarkdown>}
+        </ReactMarkdown></div>}
       </Paper>
 
       <Snackbar
