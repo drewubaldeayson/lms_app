@@ -4,15 +4,11 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
-const defaultUser = {
-    username: 'admin',
-    password: 'admin123'
-};
+const defaultUsers = [
+    { username: 'admin', password: 'admin123' },
+    { username: 'training', password: 'Muli-training-101' }
+];
 
-const trainingUser = {
-    username: 'training',
-    password: 'Muli-training-101'
-};
 
 // async function createDefaultUser() {
 //     try { 
@@ -68,27 +64,31 @@ async function createDefaultUser() {
 
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('Connected to MongoDB');
+
+
+        for (const userData of defaultUsers) {
         
-        // Check if user already exists
-        const existingUser = await User.findOne({ username: trainingUser.username });
-        
-        if (existingUser) {
-            console.log('Training user already exists');
-            return;
+            // Check if user already exists
+            const existingUser = await User.findOne({ username: userData.username });
+            
+            if (existingUser) {
+                console.log('User already exists');
+                return;
+            }
+
+            // Hash password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+            // Create new user
+            const user = new User({
+                username: userData.username,
+                password: hashedPassword
+            });
+
+            await user.save();
+            console.log('User created successfully');
         }
-
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(trainingUser.password, salt);
-
-        // Create new user
-        const user = new User({
-            username: trainingUser.username,
-            password: hashedPassword
-        });
-
-        await user.save();
-        console.log('Training user created successfully');
     } catch (error) {
         console.error('Error creating Training user:', error);
     } finally {
