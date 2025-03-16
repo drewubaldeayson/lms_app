@@ -36,11 +36,33 @@ app.use((req, res, next) => {
     next();
 });
 
+
+app.use((req, res, next) => {
+    const allowedPaths = ['/api/auth', '/api/content', '/api/search', '/api/videos', '/api/users'];
+    const isAllowedPath = allowedPaths.some(path => req.url.startsWith(path));
+
+    if (!isAllowedPath) {
+        return res.status(403).json({
+            success: false,
+            message: 'Access to this resource is forbidden'
+        });
+    }
+    next();
+});
+
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/content', auth,  contentRoutes);
 app.use('/api/search', auth, searchRoutes);
 app.use('/api/videos',auth, videoRoutes);
 app.use('/api/users', auth, userRoutes);
+
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'Resource not found'
+    });
+});
 
 app.listen(config.port, () => console.log(`Server running in ${process.env.NODE_ENV} mode on port ${config.port}`));
