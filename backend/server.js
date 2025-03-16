@@ -9,6 +9,7 @@ const contentRoutes = require('./routes/content');
 const searchRoutes = require('./routes/search');
 const videoRoutes = require('./routes/video');
 const userRoutes = require('./routes/users');
+const auth = require('./middleware/auth');
 
 const config = require('./config/config');
 
@@ -37,9 +38,9 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/content', contentRoutes);
-app.use('/api/search', searchRoutes);
-app.use('/api/videos', videoRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/content', auth,  contentRoutes);
+app.use('/api/search', auth, searchRoutes);
+app.use('/api/videos',auth, videoRoutes);
+app.use('/api/users', auth, userRoutes);
 
 app.listen(config.port, () => console.log(`Server running in ${process.env.NODE_ENV} mode on port ${config.port}`));
