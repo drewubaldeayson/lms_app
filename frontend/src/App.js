@@ -8,6 +8,7 @@ import ContentPage from './pages/ContentPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
+import NotFoundPage from './pages/NotFoundPage'; 
 
 const theme = createTheme({
   // Add your theme customization here
@@ -49,6 +50,8 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+            {/* 404 Route - must be the last route */}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
