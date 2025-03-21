@@ -9,6 +9,8 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
+
     useEffect(() => {
        
         // Check token validity on app load
