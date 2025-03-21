@@ -58,4 +58,72 @@ router.post('/login', async (req, res) => {
     }
 });
 
+
+router.get('/validate-token', async (req, res) => {
+    try {
+        // Get the token from the Authorization header
+        const authHeader = req.headers.authorization;
+        
+        if (!authHeader) {
+            return res.status(401).json({ 
+                valid: false, 
+                message: 'No token provided' 
+            });
+        }
+
+        // Extract the token (assuming "Bearer <token>" format)
+        const token = authHeader.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({ 
+                valid: false, 
+                message: 'Invalid token format' 
+            });
+        }
+
+        // Verify the token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Check if the user still exists
+        const user = await User.findById(decoded.userId);
+
+        if (!user) {
+            return res.status(401).json({ 
+                valid: false, 
+                message: 'User no longer exists' 
+            });
+        }
+
+        // Optional: Check for additional conditions like account status
+        if (user.isDeactivated) {
+            return res.status(401).json({ 
+                valid: false, 
+                message: 'Account is deactivated' 
+            });
+        }
+
+        // Token is valid
+        return res.json({ 
+            valid: true,
+            username: user.username,
+            lastLogin: user.lastLogin
+        });
+
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ 
+                valid: false, 
+                message: 'Token expired' 
+            });
+        }
+
+        console.error('Token validation error:', error);
+        return res.status(500).json({ 
+            valid: false, 
+            message: 'Internal server error during token validation' 
+        });
+    }
+});
+
+
 module.exports = router;

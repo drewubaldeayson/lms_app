@@ -21,6 +21,7 @@ const Login = () => {
     try {
       const response = await login(credentials);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('lastActivity', Date.now().toString());
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
