@@ -5,11 +5,11 @@ import { CircularProgress, Box } from '@mui/material'
 
 const AuthContext = createContext(null);
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
+
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
-
-    const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
     useEffect(() => {
        
@@ -58,7 +58,6 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('lastActivity', Date.now().toString());
         };
     
-        // Add event listeners for tracking activity
         window.addEventListener('mousemove', trackActivity);
         window.addEventListener('keydown', trackActivity);
         
