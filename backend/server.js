@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const contentRoutes = require('./routes/content');
@@ -28,7 +29,66 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.use('/api/content', express.static(path.join(__dirname, 'markdown-files')));
+
+// Custom middleware to serve from multiple directories
+const multiDirectoryAttachmentStatic = () => {
+    return (req, res, next) => {
+      // Decode the path to handle URL-encoded characters
+      const requestedPath = decodeURIComponent(req.path.replace(/^\//, ''));
+      
+      console.log('Requested attachment path:', requestedPath);
+  
+      // Potential directories to check
+      const directories = [
+        path.join(__dirname, 'markdown-files'),
+        path.join(__dirname, 'markdown-files-manual')
+      ];
+  
+      // Function to find the full path of the attachment
+      const findAttachmentPath = (directories) => {
+        for (const baseDir of directories) {
+          // Split the path to handle nested directories
+          const pathParts = requestedPath.split('/');
+          
+          // Try different path combinations
+          const possiblePaths = [
+            // Direct path
+            path.join(baseDir, requestedPath),
+            
+            // Path with 'attachments' inserted
+            path.join(baseDir, ...pathParts.slice(0, -1), 'attachments', pathParts[pathParts.length - 1]),
+            
+            // Path where 'attachments' might be a sibling directory
+            path.join(baseDir, path.dirname(requestedPath), 'attachments', path.basename(requestedPath))
+          ];
+  
+          for (const fullPath of possiblePaths) {
+            console.log('Checking path:', fullPath);
+            
+            if (fs.existsSync(fullPath)) {
+              console.log('Found attachment at:', fullPath);
+              return fullPath;
+            }
+          }
+        }
+        return null;
+      };
+  
+      // Find the attachment path
+      const attachmentPath = findAttachmentPath(directories);
+  
+      if (attachmentPath) {
+        // Serve the file directly
+        return res.sendFile(attachmentPath);
+      }
+  
+      // If no file found, log and pass to next middleware
+      console.error('Attachment not found:', requestedPath);
+      next();
+    };
+};
+
+app.use('/api/content', multiDirectoryAttachmentStatic());
 
 // Log all requests (for debugging)
 app.use((req, res, next) => {

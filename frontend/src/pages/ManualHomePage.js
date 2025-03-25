@@ -1,18 +1,17 @@
-// frontend/src/pages/HomePage.js
 import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 
-const HomePage = () => {
+const ManualHomePage = () => {
   return (
     <Paper sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Welcome to Procedure Knowledge Base
+        Welcome to Manual Knowledge Base Page
       </Typography>
       <Typography paragraph>
-        Please select a document from the left menu to get started.
+        Please select a manual document from the left menu to get started.
       </Typography>
     </Paper>
   );
 };
 
-export default HomePage;
+export default ManualHomePage;

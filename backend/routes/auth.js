@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 router.post('/login', async (req, res) => {
     try {
@@ -59,7 +60,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-router.get('/validate-token', async (req, res) => {
+router.get('/validate-token', auth, async (req, res) => {
     try {
         // Get the token from the Authorization header
         const authHeader = req.headers.authorization;

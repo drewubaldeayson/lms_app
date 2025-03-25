@@ -1,4 +1,4 @@
-// frontend/src/pages/ContentPage.js
+// frontend/src/pages/ManualContentPage.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, CircularProgress, Alert, Paper, Typography, Modal, IconButton,
@@ -24,7 +24,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
 
 
-const ContentPage = ({ setHeadings }) => {
+const ManualContentPage = ({ setHeadings }) => {
   const { '*': path } = useParams();
   const [content, setContent] = useState('');
   const [editableContent, setEditableContent] = useState('');
@@ -203,7 +203,7 @@ const ContentPage = ({ setHeadings }) => {
       try {
       const response = await fetch(imageUrl, { mode: 'cors',  headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
-      } });
+      }  });
       if (!response.ok) {
       }
       const blob = await response.blob();
@@ -548,4 +548,4 @@ const ContentPage = ({ setHeadings }) => {
   );
 };
 
-export default ContentPage;
+export default ManualContentPage;

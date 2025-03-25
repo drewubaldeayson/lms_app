@@ -27,6 +27,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
     volumes:
       - ./backend/markdown-files:/app/markdown-files:ro
+      - ./backend/markdown-files-manual:/app/markdown-files-manual:ro
       - /app/node_modules
     depends_on:
       - mongodb

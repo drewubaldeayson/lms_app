@@ -89,4 +89,4 @@ sudo systemctl enable fail2ban
 sudo systemctl start fail2ban
 
 
-docker-compose -f docker-compose.dev.yml exec backend node scripts/createInitialUser.js
+docker-compose -f docker-compose.dev.yml exec backend node scripts/createDefaultUser.js

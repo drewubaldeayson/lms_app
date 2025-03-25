@@ -185,4 +185,98 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/manual', async (req, res) => {
+    try {
+        const { q: searchTerm, limit = 10 } = req.query;
+
+        if (!searchTerm || searchTerm.length < 2) {
+            return res.json({
+                success: true,
+                data: { results: [] }
+            });
+        }
+
+        const results = [];
+        const markdownDir = path.join(process.cwd(), 'markdown-files-manual');
+
+        const searchInFile = async (filePath, fileName) => {
+            try {
+                const content = await fs.readFile(filePath, 'utf8');
+                const lowerContent = content.toLowerCase();
+                const lowerSearchTerm = searchTerm.toLowerCase();
+
+                if (lowerContent.includes(lowerSearchTerm)) {
+                    const headings = extractHeadings(content);
+                    const context = getSearchContext(content, searchTerm);
+                    const relevance = calculateRelevance(content, searchTerm, fileName, headings);
+
+                    // Find the nearest heading to the search result
+                    let nearestHeading = null;
+                    let minDistance = Infinity;
+                    headings.forEach(heading => {
+                        const headingIndex = content.indexOf(heading.text);
+                        const distance = Math.abs(headingIndex - context.position);
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            nearestHeading = heading;
+                        }
+                    });
+
+                    const relativePath = path.relative(markdownDir, filePath).replace(/\\/g, '/');
+
+                    results.push({
+                        title: fileName.replace(/\.md$/, '').replace(/-/g, ' '),
+                        path: relativePath,
+                        context: context,
+                        relevance,
+                        section: nearestHeading?.text || null,
+                        position: context.position
+                    });
+                }
+            } catch (error) {
+                console.error(`Error reading file ${filePath}:`, error);
+            }
+        };
+
+        const processDirectory = async (dirPath) => {
+            const items = await fs.readdir(dirPath);
+            
+            for (const item of items) {
+                const fullPath = path.join(dirPath, item);
+                const stat = await fs.stat(fullPath);
+                
+                if (stat.isDirectory()) {
+                    await processDirectory(fullPath);
+                } else if (item.endsWith('.md')) {
+                    await searchInFile(fullPath, item);
+                }
+            }
+        };
+
+        await processDirectory(markdownDir);
+
+        // Sort results by relevance score
+        results.sort((a, b) => b.relevance - a.relevance);
+
+        // Return only the top results based on limit
+        const topResults = results.slice(0, limit);
+
+        res.json({
+            success: true,
+            data: {
+                results: topResults,
+                total: results.length,
+                query: searchTerm
+            }
+        });
+
+    } catch (error) {
+        console.error('Search error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error performing search'
+        });
+    }
+});
+
 module.exports = router;

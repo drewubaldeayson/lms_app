@@ -51,22 +51,28 @@ router.get('/tree', (req, res) => {
 // Get file content
 router.get('/file/:path(*)', async (req, res) => {
   try {
-    const markdownDir = path.join(process.cwd(), 'markdown-files');
-    const filePath = path.join(markdownDir, req.params.path);
-    
-    console.log('Requested path:', req.params.path);
-    console.log('Full file path:', filePath);
+    const defaultMarkdownDir = path.join(process.cwd(), 'markdown-files');
+    const manualMarkdownDir = path.join(process.cwd(), 'markdown-files-manual');
 
-    // Check if file exists
+    let filePath = path.join(defaultMarkdownDir, req.params.path);
+    let markdownDir = defaultMarkdownDir;
+
     try {
       await fs.access(filePath);
-      console.log('File exists at:', filePath);
-    } catch (error) {
-      console.error('File not found:', filePath);
-      return res.status(404).json({
-        success: false,
-        message: `File not found: ${req.params.path}`
-      });
+    } catch (defaultError) {
+      // If not in default, try manual directory
+      filePath = path.join(manualMarkdownDir, req.params.path);
+      markdownDir = manualMarkdownDir;
+      
+      try {
+        await fs.access(filePath);
+      } catch (manualError) {
+        console.error('File not found in either directory:', req.params.path);
+        return res.status(404).json({
+          success: false,
+          message: `File not found: ${req.params.path}`
+        });
+      }
     }
 
     // Read file content
@@ -80,7 +86,9 @@ router.get('/file/:path(*)', async (req, res) => {
       (match, altText, imagePath) => {
         const relativePath = imagePath.replace('./', '');
         const encodedPath = encodeURIComponent(relativePath);
-        const fullUrl = `${API_URL}/${fileDir}/${encodedPath}`;
+        
+        const fullUrl = `${API_URL}/api/content/${path.dirname(req.params.path)}/attachments/${encodedPath}`;
+    
         console.log('Image path transformed:', fullUrl);
         return `![${altText}](${fullUrl})`;
       }
@@ -189,8 +197,6 @@ router.post('/videos/:path(*)', async (req, res) => {
     }
 });
 
-
-// backend/routes/content.js
 router.put('/file/:path(*)', async (req, res) => {
   try {
     const markdownDir = path.join(process.cwd(), 'markdown-files');
@@ -264,6 +270,50 @@ router.put('/file/:path(*)', async (req, res) => {
       success: false,
       message: 'Error updating content',
       error: error.message
+    });
+  }
+});
+
+
+
+//manual content
+
+router.get('/tree/manual', (req, res) => {
+  try {
+    const markdownDir = path.join(process.cwd(), 'markdown-files-manual');
+    console.log('Markdown directory:', markdownDir); // Debug log
+
+    const tree = dirTree(markdownDir, {
+      // extensions: /\.md$/,
+      normalizePath: true,
+      attributes: ['size', 'mtime'],
+      exclude: /node_modules/
+    });
+
+    // Transform the tree to use relative paths
+    const transformTree = (node) => {
+      if (node.path) {
+        // Make path relative to w directory
+        node.path = path.relative(markdownDir, node.path).replace(/\\/g, '/');
+      }
+      if (node.children) {
+        node.children = node.children.map(transformTree);
+      }
+      return node;
+    };
+
+    const transformedTree = transformTree(tree);
+    console.log('Transformed tree:', JSON.stringify(transformedTree, null, 2)); // Debug log
+
+    res.json({
+      success: true,
+      data: transformedTree
+    });
+  } catch (error) {
+    console.error('Error getting directory tree:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching directory structure'
     });
   }
 });

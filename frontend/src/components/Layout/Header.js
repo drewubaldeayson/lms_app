@@ -1,5 +1,5 @@
 // frontend/src/components/Layout/Header.js
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -26,9 +26,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
+import { useSidebarRefresh } from '../Sidebar';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
@@ -96,6 +97,8 @@ const Header = (props) => {
     const [loading, setLoading] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+    const {  triggerSidebarRefresh } = useSidebarRefresh();
+    const location = useLocation();
     const navigate = useNavigate();
 
     const username = localStorage.getItem('username') || 'Admin';
@@ -120,8 +123,12 @@ const Header = (props) => {
           }
     
           try {
+            const endpoint = location.pathname.includes('/manual') 
+            ? `${API_URL}/api/search/manual?q=${encodeURIComponent(value)}`
+            : `${API_URL}/api/search?q=${encodeURIComponent(value)}`;
+    
             const response = await axios.get(
-              `${API_URL}/api/search?q=${encodeURIComponent(value)}`,
+             endpoint,
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -139,7 +146,7 @@ const Header = (props) => {
             setLoading(false);
           }
         }, 1000), // 1 seconds delay
-        []
+        [location.pathname, API_URL, setSearchResults, setLoading]
     );
 
 
@@ -155,7 +162,9 @@ const Header = (props) => {
     setAnchorEl(null);
     setSearchTerm('');
     setSearchResults([]);
-    navigate(`/content/${result.path}?search=${encodeURIComponent(searchTerm)}&position=${result.position}`);
+    const basePath = location.pathname.includes('/manual') ? '/manual/content' : '/content';
+
+    navigate(`${basePath}/${result.path}?search=${encodeURIComponent(searchTerm)}&position=${result.position}`);
   };
 
   const handleLogout = () => {
@@ -174,7 +183,7 @@ const Header = (props) => {
         {props.logoComponent}
         {/* <Button
           color="inherit"
-          onClick={() => navigate('/')}
+         
           sx={{ 
             textTransform: 'none',
             fontSize: 'h6.fontSize',
@@ -261,6 +270,27 @@ const Header = (props) => {
             )}
           </List>
         </Popover>
+
+        <Button
+          color="inherit"
+          onClick={() => {
+            if (location.pathname.includes('/manual')) {
+              navigate('/'); // Redirect to the normal home page
+            } else {
+              navigate('/manual'); // Redirect to the manual home page
+            }
+            triggerSidebarRefresh()
+          }}
+          sx={{ 
+            textTransform: 'none',
+            fontSize: 'h6.fontSize',
+            fontWeight: 'bold',
+            ml: 2 // Adds some margin for spacing
+          }}
+        >
+          {location.pathname.includes('/manual') ? 'Procedure' : 'Manual'}
+        </Button>
+
 
         <Box sx={{ flexGrow: 1 }} />
         

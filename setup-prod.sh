@@ -5,6 +5,7 @@ echo "Starting production setup..."
 
 # Update necessary directories with correct permissions
 chmod -R 755 backend/markdown-files
+chmod -R 755 backend/markdown-files-manual
 
 # Create production environment file if it doesn't exist
 if [ ! -f .env ]; then

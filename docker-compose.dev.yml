@@ -28,6 +28,7 @@ services:
       - ./backend:/app
       - /app/node_modules
       - ./backend/markdown-files:/app/markdown-files
+      - ./backend/markdown-files-manual:/app/markdown-files-manual
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongodb:27017/knowledge-base

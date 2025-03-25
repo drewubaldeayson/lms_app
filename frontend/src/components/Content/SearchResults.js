@@ -6,10 +6,11 @@ import {
   Typography, 
   Box 
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const SearchResults = ({ results }) => {
   const navigate = useNavigate();
+  const location = useLocation(); 
 
   return (
     <Box sx={{ p: 2 }}>
@@ -21,7 +22,12 @@ const SearchResults = ({ results }) => {
           <ListItem 
             button 
             key={index}
-            onClick={() => navigate(`/content/${result.filePath}`)}
+            onClick={() => {
+              const basePath = location.pathname.includes('/manual') 
+                ? '/manual/content' 
+                : '/content';
+              navigate(`${basePath}/${result.filePath}`);
+            }}
           >
             <ListItemText
               primary={result.title}

@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useSidebarRefresh } from '../Sidebar';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 
@@ -47,6 +48,18 @@ const TreeNode = ({ node, level = 0, selectedPath, onSelect }) => {
 
     // Skip rendering the "markdown-files" node itself
   if (node.name === 'markdown-files') {
+    return node.children.map((child, index) => (
+      <TreeNode
+        key={index}
+        node={child}
+        level={level} // Keep the same level as the parent
+        selectedPath={selectedPath}
+        onSelect={onSelect}
+      />
+    ));
+  }
+
+  if (node.name === 'markdown-files-manual') {
     return node.children.map((child, index) => (
       <TreeNode
         key={index}
@@ -129,37 +142,74 @@ const Sidebar = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { shouldRefreshSidebar, resetSidebarRefresh } = useSidebarRefresh();
 
   useEffect(() => {
     const fetchDirectoryTree = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get(`${API_URL}/api/content/tree`, {
+
+      const isReloadablePath = 
+      location.pathname === '/' || 
+      location.pathname === '/manual' ||
+      location.pathname.startsWith('/content') && 
+      !location.pathname.includes('/content/');
+
+
+      const shouldFetch = 
+        shouldRefreshSidebar || 
+        isReloadablePath;
+
+      if (!shouldFetch) return;
+
+
+      try {
+          setLoading(true);
+          setError(null);
+
+        
+          const currentUrl = window.location.href;
+          const endpoint = currentUrl.includes('/manual') 
+              ? `${API_URL}/api/content/tree/manual` 
+              : `${API_URL}/api/content/tree`;
+  
+          const response = await axios.get(endpoint, {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
+                  Authorization: `Bearer ${localStorage.getItem('token')}`
               }
-            });
-            
-            if (response.data.success) {
+          });
+  
+          if (response.data.success) {
               console.log('Tree data:', response.data.data); // Debug log
               setTreeData(response.data.data);
-            } else {
+              resetSidebarRefresh();
+          } else {
               setError('Failed to load directory structure');
-            }
-          } catch (error) {
-            console.error('Error fetching tree:', error);
-            setError('Error loading directory structure');
-          } finally {
-            setLoading(false);
           }
-    };
-
+      } catch (error) {
+          console.error('Error fetching tree:', error);
+          setError('Error loading directory structure');
+          resetSidebarRefresh();
+      } finally {
+          setLoading(false);
+          resetSidebarRefresh();
+      }
+      
+    }
     fetchDirectoryTree();
-  }, []);
+  }, [ location.pathname, 
+    shouldRefreshSidebar,
+    resetSidebarRefresh]);
 
   const handleSelect = (path) => {
     console.log('Handling selection:', path); // Debug log
-    navigate(`/content/${path}`);
+
+    const currentUrl = window.location.href;
+  
+    if (currentUrl.includes('/manual')) {
+      navigate(`/manual/content/${path}`);
+    } else {
+      navigate(`/content/${path}`);
+    }
+ 
   };
 
   if (loading) {
@@ -221,7 +271,9 @@ const Sidebar = () => {
           <List>
             <TreeNode
               node={treeData}
-              selectedPath={location.pathname.replace('/content/', '')}
+              selectedPath={location.pathname.includes('/manual') 
+                ? location.pathname.replace('/manual/content/', '') 
+                : location.pathname.replace('/content/', '')}
               onSelect={handleSelect}
             />
           </List>
