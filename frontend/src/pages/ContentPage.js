@@ -482,6 +482,7 @@ const ContentPage = ({ setHeadings }) => {
                 id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                 style={{
                   scrollMarginTop: '80px',
+                  fontSize: '1.6em',
                   transition: 'background-color 0.3s ease'
                 }}
                 {...props}
@@ -492,6 +493,7 @@ const ContentPage = ({ setHeadings }) => {
                 id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                 style={{
                   scrollMarginTop: '80px',
+                  fontSize: '1.4em',
                   transition: 'background-color 0.3s ease'
                 }}
                 {...props}

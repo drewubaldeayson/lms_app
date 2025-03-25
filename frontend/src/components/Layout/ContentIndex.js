@@ -9,6 +9,26 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+
+// Function to clean markdown from headings
+const cleanMarkdownHeading = (heading) => {
+  // Remove code backticks
+  let cleanedHeading = heading.replace(/`([^`]+)`/g, '$1');
+  
+  // Remove bold and italic markdown
+  cleanedHeading = cleanedHeading
+    .replace(/\*\*(.*?)\*\*/g, '$1')  // Bold **text**
+    .replace(/\*(.*?)\*/g, '$1')      // Italic *text*
+    .replace(/__(.*?)__/g, '$1')      // Bold __text__
+    .replace(/_(.*?)_/g, '$1');       // Italic _text_
+
+  // Remove links
+  cleanedHeading = cleanedHeading.replace(/$$([^$$]+)\]$$[^$$]+\)/g, '$1');
+
+  // Trim any remaining whitespace
+  return cleanedHeading.trim();
+};
+
 const IndexItem = styled(ListItem)(({ theme, active }) => ({
   paddingLeft: theme.spacing(2),
   cursor: 'pointer',
@@ -27,10 +47,19 @@ const IndexItem = styled(ListItem)(({ theme, active }) => ({
 const ContentIndex = ({ headings }) => {
   const [activeHeading, setActiveHeading] = useState('');
 
+  // Process headings to remove markdown
+  const processedHeadings = headings.map(heading => ({
+    ...heading,
+    text: cleanMarkdownHeading(heading.text),
+    id: cleanMarkdownHeading(heading.text)
+      .toLowerCase()
+      .replace(/[^\w]+/g, '-')
+  }));
+
   // Function to handle scroll and highlight active section
   useEffect(() => {
     const handleScroll = () => {
-      const headingElements = headings.map(heading => ({
+      const headingElements = processedHeadings .map(heading => ({
         id: heading.id,
         element: document.getElementById(heading.id)
       })).filter(({ element }) => element);
@@ -51,6 +80,8 @@ const ContentIndex = ({ headings }) => {
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [headings]);
+
+
 
   const scrollToHeading = (id) => {
     const element = document.getElementById(id);
@@ -93,7 +124,7 @@ const ContentIndex = ({ headings }) => {
         Table of Contents
       </Typography>
       <List dense>
-        {headings.map((heading, index) => (
+        {processedHeadings.map((heading, index) => (
           <IndexItem
             key={index}
             onClick={() => scrollToHeading(heading.id)}
