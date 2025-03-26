@@ -99,12 +99,37 @@ router.get('/file/:path(*)', async (req, res) => {
     const headings = [];
     const headingRegex = /^(#{1,3})\s+(.+)$/gm;
     let match;
+    let uniqueIds = new Set();
     
     while ((match = headingRegex.exec(content)) !== null) {
+      // Clean the heading text (remove markdown formatting)
+      const cleanText = match[2]
+      // Remove bold markdown
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      // Remove italic markdown
+      .replace(/\*(.*?)\*/g, '$1')
+      // Remove code backticks
+      .replace(/`([^`]+)`/g, '$1')
+      // Remove links
+      .replace(/$$([^$$]+)\]$$[^$$]+\)/g, '$1')
+      .trim();
+
+      // Generate base ID
+      let baseId = cleanText.toLowerCase().replace(/[^\w]+/g, '-');
+
+      // Ensure unique ID
+      let id = baseId;
+      let counter = 1;
+      while (uniqueIds.has(id)) {
+        id = `${baseId}-${counter}`;
+        counter++;
+      }
+      uniqueIds.add(id);
+      
       headings.push({
         level: match[1].length,
-        text: match[2],
-        id: match[2].toLowerCase().replace(/[^\w]+/g, '-')
+        text: cleanText,
+        id: id
       });
     }
 
