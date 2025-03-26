@@ -48,12 +48,14 @@ const ContentIndex = ({ headings }) => {
   const [activeHeading, setActiveHeading] = useState('');
 
   // Process headings to remove markdown
-  const processedHeadings = headings.map(heading => ({
+  const processedHeadings = headings.map((heading, index) => ({
     ...heading,
     text: cleanMarkdownHeading(heading.text),
+    // Ensure unique ID by adding index if needed
     id: cleanMarkdownHeading(heading.text)
       .toLowerCase()
-      .replace(/[^\w]+/g, '-')
+      .replace(/[^\w]+/g, '-') + 
+      (heading.level > 1 ? `-${index}` : '')
   }));
 
   // Function to handle scroll and highlight active section
@@ -79,7 +81,7 @@ const ContentIndex = ({ headings }) => {
     handleScroll(); // Initial check
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [headings]);
+  }, [processedHeadings]);
 
 
 
@@ -131,7 +133,8 @@ const ContentIndex = ({ headings }) => {
             active={activeHeading === heading.id}
             sx={{
               pl: heading.level > 1 ? (heading.level * 2) : 2,
-              py: 0.5
+              py: 0.5,
+              cursor: 'pointer'
             }}
           >
             <ListItemText
