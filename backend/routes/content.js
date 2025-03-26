@@ -97,7 +97,7 @@ router.get('/file/:path(*)', async (req, res) => {
     
     // Extract headings
     const headings = [];
-    const headingRegex = /^(#{1,3})\s+(.+)$/gm;
+    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
     let match;
     let uniqueIds = new Set();
     
@@ -106,8 +106,10 @@ router.get('/file/:path(*)', async (req, res) => {
       const cleanText = match[2]
       // Remove bold markdown
       .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/__(.*?)__/g, '$1')
       // Remove italic markdown
       .replace(/\*(.*?)\*/g, '$1')
+      .replace(/_(.*?)_/g, '$1')
       // Remove code backticks
       .replace(/`([^`]+)`/g, '$1')
       // Remove links
