@@ -130,7 +130,7 @@ const ContentIndex = ({ headings }) => {
             onClick={() => scrollToHeading(heading.id)}
             active={activeHeading === heading.id}
             sx={{
-              pl: heading.level + 1,
+              pl: heading.level > 1 ? (heading.level * 2) : 2,
               py: 0.5
             }}
           >
