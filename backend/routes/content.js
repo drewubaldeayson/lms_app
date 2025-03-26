@@ -76,13 +76,13 @@ router.get('/file/:path(*)', async (req, res) => {
     }
 
     // Read file content
-    let  content = await fs.readFile(filePath, 'utf8');
+    let content = await fs.readFile(filePath, 'utf8');
 
     // Get the directory of the current markdown file
     const fileDir = path.dirname(req.params.path);
 
     content = content.replace(
-      /!$$(.*?)$$$$(\.\/attachments\/[^)]+)$$/g,
+      /!\$\$(.*?)\$\$\$\$(\.\/attachments\/[^)]+)\$\$/g,
       (match, altText, imagePath) => {
         const relativePath = imagePath.replace('./', '');
         const encodedPath = encodeURIComponent(relativePath);
@@ -94,7 +94,6 @@ router.get('/file/:path(*)', async (req, res) => {
       }
     );
 
-    
     // Extract headings
     const headings = [];
     const headingRegex = /^(#{1,6})\s+(.+)$/gm;
@@ -104,17 +103,16 @@ router.get('/file/:path(*)', async (req, res) => {
     while ((match = headingRegex.exec(content)) !== null) {
       // Clean the heading text (remove markdown formatting)
       const cleanText = match[2]
-      // Remove bold markdown
-      .replace(/\*\*(.*?)\*\*/g, '$1')
-      .replace(/__(.*?)__/g, '$1')
-      // Remove italic markdown
-      .replace(/\*(.*?)\*/g, '$1')
-      .replace(/_(.*?)_/g, '$1')
-      // Remove code backticks
-      .replace(/`([^`]+)`/g, '$1')
-      // Remove links
-      .replace(/$$([^$$]+)\]$$[^$$]+\)/g, '$1')
-      .trim();
+        // Remove bold and italic markdown
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/__(.*?)__/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/_(.*?)_/g, '$1')
+        // Remove code backticks
+        .replace(/`([^`]+)`/g, '$1')
+        // Remove links
+        .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+        .trim();
 
       // Generate base ID
       let baseId = cleanText.toLowerCase().replace(/[^\w]+/g, '-');
