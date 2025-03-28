@@ -20,18 +20,44 @@ router.get('/tree', (req, res) => {
       exclude: /node_modules/
     });
 
-    // Transform the tree to use relative paths
     const transformTree = (node) => {
       if (node.path) {
         // Make path relative to markdown-files directory
         node.path = path.relative(markdownDir, node.path).replace(/\\/g, '/');
       }
+      
+      // Custom sorting function
+      const customSort = (a, b) => {
+        // Extract numeric prefixes
+        const extractPrefix = (filename) => {
+          const match = filename.match(/^(\d+(?:\.\d+)*)/);
+          return match ? match[1].split('.').map(Number) : [];
+        };
+    
+        const prefixA = extractPrefix(a.name);
+        const prefixB = extractPrefix(b.name);
+    
+        // Compare numeric prefixes
+        for (let i = 0; i < Math.min(prefixA.length, prefixB.length); i++) {
+          if (prefixA[i] !== prefixB[i]) {
+            return prefixA[i] - prefixB[i];
+          }
+        }
+    
+        // If prefixes are the same, compare lengths
+        return prefixA.length - prefixB.length;
+      };
+    
+      // Sort children if they exist
       if (node.children) {
-        node.children = node.children.map(transformTree);
+        node.children = node.children
+          .map(transformTree) // Recursively transform child nodes
+          .sort(customSort);
       }
+    
       return node;
     };
-
+    
     const transformedTree = transformTree(tree);
     console.log('Transformed tree:', JSON.stringify(transformedTree, null, 2)); // Debug log
 
@@ -315,18 +341,44 @@ router.get('/tree/manual', (req, res) => {
       exclude: /node_modules/
     });
 
-    // Transform the tree to use relative paths
     const transformTree = (node) => {
       if (node.path) {
-        // Make path relative to w directory
+        // Make path relative to markdown-files directory
         node.path = path.relative(markdownDir, node.path).replace(/\\/g, '/');
       }
+      
+      // Custom sorting function
+      const customSort = (a, b) => {
+        // Extract numeric prefixes
+        const extractPrefix = (filename) => {
+          const match = filename.match(/^(\d+(?:\.\d+)*)/);
+          return match ? match[1].split('.').map(Number) : [];
+        };
+    
+        const prefixA = extractPrefix(a.name);
+        const prefixB = extractPrefix(b.name);
+    
+        // Compare numeric prefixes
+        for (let i = 0; i < Math.min(prefixA.length, prefixB.length); i++) {
+          if (prefixA[i] !== prefixB[i]) {
+            return prefixA[i] - prefixB[i];
+          }
+        }
+    
+        // If prefixes are the same, compare lengths
+        return prefixA.length - prefixB.length;
+      };
+    
+      // Sort children if they exist
       if (node.children) {
-        node.children = node.children.map(transformTree);
+        node.children = node.children
+          .map(transformTree) // Recursively transform child nodes
+          .sort(customSort);
       }
+    
       return node;
     };
-
+    
     const transformedTree = transformTree(tree);
     console.log('Transformed tree:', JSON.stringify(transformedTree, null, 2)); // Debug log
 
