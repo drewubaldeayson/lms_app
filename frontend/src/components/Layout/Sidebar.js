@@ -1,4 +1,3 @@
-// frontend/src/components/Layout/Sidebar.js
 import React, { useState, useEffect } from 'react';
 import {
   Drawer,
@@ -23,118 +22,9 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { useSidebarRefresh } from '../Sidebar';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
-
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 const DRAWER_WIDTH = 350;
-
-const TreeNode = ({ node, level = 0, selectedPath, onSelect }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-    const isFile = !node.children;
-    const isMarkdown = node.name.endsWith('.md');
-    const isAttachment = !isMarkdown && isFile;
-
-    const shouldRenderNode = () => {
-        const excludedFolders = ['attachments'];
-        return !excludedFolders.includes(node.name);
-    };
-
-    // If node should not be rendered, return null
-    if (!shouldRenderNode()) {
-        return null;
-    }
-
-
-    // Skip rendering the "markdown-files" node itself
-  if (node.name === 'markdown-files') {
-    return node.children.map((child, index) => (
-      <TreeNode
-        key={index}
-        node={child}
-        level={level} // Keep the same level as the parent
-        selectedPath={selectedPath}
-        onSelect={onSelect}
-      />
-    ));
-  }
-
-  if (node.name === 'markdown-files-manual') {
-    return node.children.map((child, index) => (
-      <TreeNode
-        key={index}
-        node={child}
-        level={level} // Keep the same level as the parent
-        selectedPath={selectedPath}
-        onSelect={onSelect}
-      />
-    ));
-  }
-  
-    const handleClick = () => {
-        if (node.children) {
-          setIsExpanded(!isExpanded);
-        } else if (isMarkdown) {
-          onSelect(node.path);
-        }
-    };
-
-    const getIcon = () => {
-      if (node.children) return <FolderOutlined />;
-      if (isMarkdown) return <DescriptionOutlined />;
-      if (node.name.match(/\.(jpg|jpeg|png|gif|svg)$/i)) return <ImageOutlined />;
-      return <AttachFileOutlined />;
-    };
-  
-    const displayName = node.name
-    .replace(/.md$/, '');
-  
-    return (
-      <>
-        <ListItemButton
-          onClick={handleClick}
-          sx={{
-            pl: level * 2 + 2,
-            bgcolor: selectedPath === node.path ? 'action.selected' : 'inherit',
-            cursor: isAttachment ? 'default' : 'pointer',
-            '&:hover': {
-              bgcolor: isAttachment ? 'inherit' : 'action.hover'
-            }
-          }}
-          disabled={isAttachment}
-        >
-          <ListItemIcon>
-            {getIcon()}
-          </ListItemIcon>
-          <Tooltip title={displayName} placement="right">
-            <ListItemText 
-              primary={displayName}
-              sx={{
-                opacity: isAttachment ? 0.6 : 1
-              }}
-            />
-          </Tooltip>
-          {node.children && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
-        </ListItemButton>
-        
-        {node.children && (
-          <Collapse in={isExpanded}>
-            <List disablePadding>
-              {node.children.map((child, index) => (
-                <TreeNode
-                  key={index}
-                  node={child}
-                  level={level + 1}
-                  selectedPath={selectedPath}
-                  onSelect={onSelect}
-                />
-              ))}
-            </List>
-          </Collapse>
-        )}
-      </>
-    );
-  };
 
 const Sidebar = () => {
   const [treeData, setTreeData] = useState(null);
@@ -142,88 +32,55 @@ const Sidebar = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { shouldRefreshSidebar, resetSidebarRefresh } = useSidebarRefresh();
 
-
-  // Determine if the current path is a manual path
+  // Determine if current path is manual
   const isManualPath = () => 
-    location.pathname.startsWith('/manual') || 
-    location.pathname === '/manual' ||
-    location.pathname.includes('/manual/content');
+    location.pathname.includes('/manual') || 
+    location.pathname === '/manual';
 
-    useEffect(() => {
-      const fetchDirectoryTree = async () => {
-        try {
-          setLoading(true);
-          setError(null);
-  
-          // Determine the correct endpoint
-          const endpoint = isManualPath()
-            ? `${API_URL}/api/content/tree/manual`
-            : `${API_URL}/api/content/tree`;
-  
-          const response = await axios.get(endpoint, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-  
-          if (response.data.success) {
-            console.log('Tree data:', response.data.data);
-            setTreeData(response.data.data);
-          } else {
-            setError('Failed to load directory structure');
-          }
-        } catch (error) {
-          console.error('Error fetching tree:', error);
-          setError('Error loading directory structure');
-        } finally {
-          setLoading(false);
-          resetSidebarRefresh();
+  // Fetch directory tree
+  const fetchDirectoryTree = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Determine endpoint based on current path
+      const endpoint = isManualPath()
+        ? `${API_URL}/api/content/tree/manual`
+        : `${API_URL}/api/content/tree`;
+
+      const response = await axios.get(endpoint, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
-      };
-  
-      // Always fetch on initial load or when certain conditions are met
-      const shouldFetch = 
-        !treeData ||  // No existing tree data
-        shouldRefreshSidebar ||  // Explicit refresh triggered
-        location.pathname === '/' ||  // Home page
-        location.pathname === '/manual' ||  // Manual home page
-        location.pathname.startsWith('/content') ||  // Content pages
-        location.pathname.startsWith('/manual/content');  // Manual content pages
-  
-      if (shouldFetch) {
-        fetchDirectoryTree();
+      });
+
+      if (response.data.success) {
+        console.log('Tree data loaded:', response.data.data);
+        setTreeData(response.data.data);
+      } else {
+        throw new Error('Failed to load directory structure');
       }
-    }, [
-      location.pathname, 
-      shouldRefreshSidebar,
-      treeData,
-      resetSidebarRefresh
-  ]);
-
-  // Persist sidebar state across page reloads
-  useEffect(() => {
-    // Check if we need to restore the previous path
-    const savedPath = localStorage.getItem('lastSidebarPath');
-    if (savedPath && !location.pathname) {
-      navigate(savedPath);
+    } catch (error) {
+      console.error('Error fetching tree:', error);
+      setError(error.message || 'Error loading directory structure');
+    } finally {
+      setLoading(false);
     }
-
-    // Save current path for potential reload
-    localStorage.setItem('lastSidebarPath', location.pathname);
-  }, [location.pathname, navigate]);
-
-
-  const handleSelect = (path) => {
-    console.log('Handling selection:', path);
-
-    const basePath = isManualPath() ? '/manual/content' : '/content';
-    const fullPath = `${basePath}/${path}`;
-  
-    navigate(fullPath);
   };
 
+  // Fetch on component mount and path change
+  useEffect(() => {
+    fetchDirectoryTree();
+  }, [location.pathname]);
+
+  // Handle node selection
+  const handleSelect = (path) => {
+    const basePath = isManualPath() ? '/manual/content' : '/content';
+    navigate(`${basePath}/${path}`);
+  };
+
+  // Render loading state
   if (loading) {
     return (
       <Drawer
@@ -245,6 +102,7 @@ const Sidebar = () => {
     );
   }
 
+  // Render error state
   if (error) {
     return (
       <Drawer
@@ -266,10 +124,85 @@ const Sidebar = () => {
     );
   }
 
+  // TreeNode component (simplified)
+  const TreeNode = ({ node, level = 0, selectedPath }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const isFile = !node.children;
+    const isMarkdown = node.name.endsWith('.md');
+
+    // Skip certain nodes
+    const shouldRenderNode = () => {
+      const excludedFolders = ['attachments'];
+      return !excludedFolders.includes(node.name);
+    };
+
+    if (!shouldRenderNode()) return null;
+
+    // Skip top-level markdown-files node
+    if (node.name === 'markdown-files' || node.name === 'markdown-files-manual') {
+      return node.children.map((child, index) => (
+        <TreeNode
+          key={index}
+          node={child}
+          level={level}
+          selectedPath={selectedPath}
+        />
+      ));
+    }
+
+    const handleClick = () => {
+      if (node.children) {
+        setIsExpanded(!isExpanded);
+      } else if (isMarkdown) {
+        handleSelect(node.path);
+      }
+    };
+
+    const getIcon = () => {
+      if (node.children) return <FolderOutlined />;
+      if (isMarkdown) return <DescriptionOutlined />;
+      return <AttachFileOutlined />;
+    };
+
+    const displayName = node.name.replace(/.md$/, '');
+
+    return (
+      <>
+        <ListItemButton
+          onClick={handleClick}
+          sx={{
+            pl: level * 2 + 2,
+            bgcolor: selectedPath === node.path ? 'action.selected' : 'inherit'
+          }}
+        >
+          <ListItemIcon>{getIcon()}</ListItemIcon>
+          <ListItemText primary={displayName} />
+          {node.children && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
+        </ListItemButton>
+        
+        {node.children && (
+          <Collapse in={isExpanded}>
+            <List disablePadding>
+              {node.children.map((child, index) => (
+                <TreeNode
+                  key={index}
+                  node={child}
+                  level={level + 1}
+                  selectedPath={selectedPath}
+                />
+              ))}
+            </List>
+          </Collapse>
+        )}
+      </>
+    );
+  };
+
   return (
     <Drawer
       variant="permanent"
       sx={{
+        width: DRAWER_WIDTH,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: DRAWER_WIDTH,
@@ -288,7 +221,6 @@ const Sidebar = () => {
                   ? location.pathname.replace('/manual/content/', '') 
                   : location.pathname.replace('/content/', '')
               }
-              onSelect={handleSelect}
             />
           </List>
         )}
