@@ -49,7 +49,7 @@ const ContentIndex = ({ headings }) => {
     // Clean the heading text
     const cleanText = cleanMarkdownHeading(heading.text);
     
-    // Generate a robust ID
+    // Generate a robust ID based on the clean text
     const generateId = (text) => {
       return text
         .toLowerCase()
@@ -60,13 +60,8 @@ const ContentIndex = ({ headings }) => {
         || `heading-${index}`;      // Fallback ID if generation fails
     };
 
-    const baseId = generateId(cleanText);
-    let id = baseId;
-    let counter = 1;
-    while (document.getElementById(id)) {
-      id = `${baseId}-${counter}`;
-      counter++;
-    }
+    // Use the backend ID if available, otherwise generate one
+    const id = heading.id || generateId(cleanText);
 
     return {
       ...heading,

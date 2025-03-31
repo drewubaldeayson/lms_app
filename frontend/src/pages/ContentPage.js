@@ -472,11 +472,11 @@ const ContentPage = ({ setHeadings }) => {
             img: ImageComponent,
             h1: ({ node, ...props }) => {
               const headingText = props.children.toString();
-                const matchedHeading = localHeadings.find(h => h.text === headingText);
+              const matchedHeading = localHeadings.find(h => h.text === headingText);
               
               return (
                 <h1
-                id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     transition: 'background-color 0.3s ease'
