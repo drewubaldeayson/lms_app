@@ -471,206 +471,116 @@ const ContentPage = ({ setHeadings }) => {
             },
             img: ImageComponent,
             h1: ({ node, children, ...props }) => {
-              // Safely extract text, handling various child types
-              const extractText = (child) => {
-                if (child === null || child === undefined) return '';
-                if (typeof child === 'string') return child;
-                if (React.isValidElement(child)) {
-                  if (typeof child.props.children === 'string') return child.props.children;
-                  if (Array.isArray(child.props.children)) {
-                    return child.props.children.map(extractText).join('');
-                  }
-                  return extractText(child.props.children);
-                }
-                return '';
-              };
-            
-              const headingText = React.Children.toArray(children)
-                .map(extractText)
-                .join('')
-                .trim();
-            
-              const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 1);
+              const matchedHeading = localHeadings.find(h => 
+                h.text === props.children.toString() && h.level === 1
+              );
               
               return (
                 <h1
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
-                />
+                >
+                  {children}
+                </h1>
               );
             },
             h2: ({ node, children, ...props }) => {
-              // Safely extract text, handling various child types
-              const extractText = (child) => {
-                if (child === null || child === undefined) return '';
-                if (typeof child === 'string') return child;
-                if (React.isValidElement(child)) {
-                  if (typeof child.props.children === 'string') return child.props.children;
-                  if (Array.isArray(child.props.children)) {
-                    return child.props.children.map(extractText).join('');
-                  }
-                  return extractText(child.props.children);
-                }
-                return '';
-              };
-            
-              const headingText = React.Children.toArray(children)
-                .map(extractText)
-                .join('')
-                .trim();
-            
-              const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 2);
+              const matchedHeading = localHeadings.find(h => 
+                h.text === props.children.toString() && h.level === 2
+              );
               
               return (
                 <h2
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.6em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
-                />
+                >
+                  {children}
+                </h2>
               );
             },
             h3: ({ node, children, ...props }) => {
-              // Safely extract text, handling various child types
-              const extractText = (child) => {
-                if (child === null || child === undefined) return '';
-                if (typeof child === 'string') return child;
-                if (React.isValidElement(child)) {
-                  if (typeof child.props.children === 'string') return child.props.children;
-                  if (Array.isArray(child.props.children)) {
-                    return child.props.children.map(extractText).join('');
-                  }
-                  return extractText(child.props.children);
-                }
-                return '';
-              };
-            
-              const headingText = React.Children.toArray(children)
-                .map(extractText)
-                .join('')
-                .trim();
-            
-              const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 3);
+              const matchedHeading = localHeadings.find(h => 
+                h.text === props.children.toString() && h.level === 3
+              );
               
               return (
                 <h3
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.4em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
-                />
+                >
+                  {children}
+                </h3>
               );
             },
             h4: ({ node, children, ...props }) => {
-              // Safely extract text, handling various child types
-              const extractText = (child) => {
-                if (child === null || child === undefined) return '';
-                if (typeof child === 'string') return child;
-                if (React.isValidElement(child)) {
-                  if (typeof child.props.children === 'string') return child.props.children;
-                  if (Array.isArray(child.props.children)) {
-                    return child.props.children.map(extractText).join('');
-                  }
-                  return extractText(child.props.children);
-                }
-                return '';
-              };
-            
-              const headingText = React.Children.toArray(children)
-                .map(extractText)
-                .join('')
-                .trim();
-            
-              const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 4);
+              const matchedHeading = localHeadings.find(h => 
+                h.text === props.children.toString() && h.level === 4
+              );
               
               return (
                 <h4
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.2em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
-                />
+                >
+                  {children}
+                </h4>
               );
             },
             h5: ({ node, children, ...props }) => {
-              // Safely extract text, handling various child types
-              const extractText = (child) => {
-                if (child === null || child === undefined) return '';
-                if (typeof child === 'string') return child;
-                if (React.isValidElement(child)) {
-                  if (typeof child.props.children === 'string') return child.props.children;
-                  if (Array.isArray(child.props.children)) {
-                    return child.props.children.map(extractText).join('');
-                  }
-                  return extractText(child.props.children);
-                }
-                return '';
-              };
-            
-              const headingText = React.Children.toArray(children)
-                .map(extractText)
-                .join('')
-                .trim();
-            
-              const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 5);
+              const matchedHeading = localHeadings.find(h => 
+                h.text === props.children.toString() && h.level === 5
+              );
               
               return (
                 <h5
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.1em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
-                />
+                >
+                  {children}
+                </h5>
               );
             },
             h6: ({ node, children, ...props }) => {
-              // Safely extract text, handling various child types
-              const extractText = (child) => {
-                if (child === null || child === undefined) return '';
-                if (typeof child === 'string') return child;
-                if (React.isValidElement(child)) {
-                  if (typeof child.props.children === 'string') return child.props.children;
-                  if (Array.isArray(child.props.children)) {
-                    return child.props.children.map(extractText).join('');
-                  }
-                  return extractText(child.props.children);
-                }
-                return '';
-              };
-            
-              const headingText = React.Children.toArray(children)
-                .map(extractText)
-                .join('')
-                .trim();
-            
-              const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 6);
+              const matchedHeading = localHeadings.find(h => 
+                h.text === props.children.toString() && h.level === 6
+              );
               
               return (
                 <h6
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
-                />
+                >
+                  {children}
+                </h6>
               );
             },
           }}
