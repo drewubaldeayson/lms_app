@@ -47,26 +47,13 @@ const IndexItem = styled(ListItem)(({ theme, active }) => ({
 const ContentIndex = ({ headings }) => {
   const [activeHeading, setActiveHeading] = useState('');
 
-  // Process headings to remove markdown
-  const processedHeadings = headings.map((heading, index) => {
-    const cleanText = cleanMarkdownHeading(heading.text);
-    
-    // Generate a robust ID
-    const baseId = cleanText
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+  // Minimal processing - just ensure unique IDs
+  const processedHeadings = headings.map((heading, index) => ({
+    ...heading,
+    id: heading.id || `heading-${index}`
+  }));
 
-    return {
-      ...heading,
-      text: cleanText,
-      id: baseId || `heading-${index}`
-    };
-  });
-
-  // Function to handle scroll and highlight active section
+  /// Function to handle scroll and highlight active section
   useEffect(() => {
     const handleScroll = () => {
       const headingElements = processedHeadings
@@ -87,30 +74,40 @@ const ContentIndex = ({ headings }) => {
       }
     };
 
+    // Add scroll event listener
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
+    
+    // Initial check
+    handleScroll();
 
+    // Cleanup
     return () => window.removeEventListener('scroll', handleScroll);
   }, [processedHeadings]);
-
 
 
   const scrollToHeading = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      // Scroll to element
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Scroll to element with offset
+      const offset = 80; // Adjust based on your header height
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
       
-      // Add temporary highlight effect
-      element.style.backgroundColor = '#fff9c4'; // Light yellow background
+      // Temporary highlight effect
+      element.style.backgroundColor = '#fff9c4';
       setTimeout(() => {
         element.style.backgroundColor = 'transparent';
-        element.style.transition = 'background-color 0.5s ease';
       }, 1000);
 
       setActiveHeading(id);
     }
   };
+  
   return (
     <Paper
       sx={{

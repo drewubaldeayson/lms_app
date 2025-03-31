@@ -147,69 +147,66 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchDirectoryTree = async () => {
 
-      const isReloadablePath = 
+      try{
+        setLoading(true);
+        setError(null);
+
+        const isManualPath = 
+          location.pathname.startsWith('/manual') || 
+          location.pathname === '/manual';
+
+        const endpoint = isManualPath
+          ? `${API_URL}/api/content/tree/manual`
+          : `${API_URL}/api/content/tree`;
+
+
+        const response = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (response.data.success) {
+          console.log('Tree data:', response.data.data);
+          setTreeData(response.data.data);
+          resetSidebarRefresh();
+        } else {
+          setError('Failed to load directory structure');
+        }
+      } catch (error) {
+        console.error('Error fetching tree:', error);
+        setError('Error loading directory structure');
+      } finally {
+        setLoading(false);
+        resetSidebarRefresh();
+      }
+    };
+
+     // Conditions to fetch directory tree
+    const shouldFetch = 
+      shouldRefreshSidebar || 
       location.pathname === '/' || 
       location.pathname === '/manual' ||
-      location.pathname.startsWith('/content') && 
-      !location.pathname.includes('/content/');
+      location.pathname.startsWith('/content') ||
+      location.pathname.startsWith('/manual/content');
 
-
-      const shouldFetch = 
-        shouldRefreshSidebar || 
-        isReloadablePath;
-
-      if (!shouldFetch) return;
-
-
-      try {
-          setLoading(true);
-          setError(null);
-
-        
-          const currentUrl = window.location.href;
-          const endpoint = currentUrl.includes('/manual') 
-              ? `${API_URL}/api/content/tree/manual` 
-              : `${API_URL}/api/content/tree`;
-  
-          const response = await axios.get(endpoint, {
-              headers: {
-                  Authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-          });
-  
-          if (response.data.success) {
-              console.log('Tree data:', response.data.data); // Debug log
-              setTreeData(response.data.data);
-              resetSidebarRefresh();
-          } else {
-              setError('Failed to load directory structure');
-          }
-      } catch (error) {
-          console.error('Error fetching tree:', error);
-          setError('Error loading directory structure');
-          resetSidebarRefresh();
-      } finally {
-          setLoading(false);
-          resetSidebarRefresh();
-      }
-      
+    if (shouldFetch) {
+      fetchDirectoryTree();
     }
-    fetchDirectoryTree();
   }, [ location.pathname, 
     shouldRefreshSidebar,
     resetSidebarRefresh]);
 
   const handleSelect = (path) => {
-    console.log('Handling selection:', path); // Debug log
+    console.log('Handling selection:', path);
 
-    const currentUrl = window.location.href;
+    const isManualPath = location.pathname.startsWith('/manual');
   
-    if (currentUrl.includes('/manual')) {
+    if (isManualPath) {
       navigate(`/manual/content/${path}`);
     } else {
       navigate(`/content/${path}`);
     }
- 
   };
 
   if (loading) {
