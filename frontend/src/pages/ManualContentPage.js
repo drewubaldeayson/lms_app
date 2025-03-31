@@ -470,7 +470,7 @@ const ManualContentPage = ({ setHeadings }) => {
             },
             img: ImageComponent,
             h1: ({ node, ...props }) => {
-              const headingText = cleanMarkdownHeading(props.children.toString());
+              const headingText = props.children.toString();
               const matchedHeading = localHeadings.find(h => h.text === headingText);
               
               return (
@@ -485,7 +485,7 @@ const ManualContentPage = ({ setHeadings }) => {
               );
             },
             h2: ({ node, ...props }) => {
-              const headingText = cleanMarkdownHeading(props.children.toString());
+              const headingText = props.children.toString();
               const matchedHeading = localHeadings.find(h => h.text === headingText);
               
               return (
