@@ -502,18 +502,58 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h3: ({ node, children, ...props }) => {
-              const headingText = React.Children.toArray(children)
-                .map(child => 
-                  typeof child === 'string' ? child : 
-                  typeof child === 'object' && child.props ? child.props.children : ''
-                )
-                .join('');
+              // Helper function to extract text from children
+              const extractText = (child) => {
+                // If child is a string, return it directly
+                if (typeof child === 'string') return child;
+                
+                // If child is a React element, try to extract its text content
+                if (React.isValidElement(child)) {
+                  // If child has children, recursively extract text
+                  if (child.props.children) {
+                    if (Array.isArray(child.props.children)) {
+                      return child.props.children.map(extractText).join('');
+                    }
+                    return extractText(child.props.children);
+                  }
+                  return '';
+                }
+                
+                // For other types, return empty string
+                return '';
+              };
             
-              const matchedHeading = localHeadings.find(h => h.text === headingText);
-              
+              // Convert children to array and extract text
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
+              // Log debugging information
+              console.log('H3 Heading Debug:', {
+                originalChildren: children,
+                extractedText: headingText,
+                allHeadings: localHeadings
+              });
+            
+              // Find matching heading
+              const matchedHeading = localHeadings.find(h => 
+                h.text.trim() === headingText || 
+                headingText.includes(h.text) || 
+                h.text.includes(headingText)
+              );
+            
+              // Generate fallback ID
+              const generateFallbackId = () => {
+                return headingText.toLowerCase().replace(/[^\w]+/g, '-');
+              };
+            
+              // Determine final ID
+              const headingId = matchedHeading?.id || generateFallbackId();
+            
               return (
                 <h3
-                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={headingId}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.4em',
@@ -524,21 +564,61 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h4: ({ node, children, ...props }) => {
-              const headingText = React.Children.toArray(children)
-                .map(child => 
-                  typeof child === 'string' ? child : 
-                  typeof child === 'object' && child.props ? child.props.children : ''
-                )
-                .join('');
+              // Helper function to extract text from children
+              const extractText = (child) => {
+                // If child is a string, return it directly
+                if (typeof child === 'string') return child;
+                
+                // If child is a React element, try to extract its text content
+                if (React.isValidElement(child)) {
+                  // If child has children, recursively extract text
+                  if (child.props.children) {
+                    if (Array.isArray(child.props.children)) {
+                      return child.props.children.map(extractText).join('');
+                    }
+                    return extractText(child.props.children);
+                  }
+                  return '';
+                }
+                
+                // For other types, return empty string
+                return '';
+              };
             
-              const matchedHeading = localHeadings.find(h => h.text === headingText);
-              
+              // Convert children to array and extract text
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
+              // Log debugging information
+              console.log('H4 Heading Debug:', {
+                originalChildren: children,
+                extractedText: headingText,
+                allHeadings: localHeadings
+              });
+            
+              // Find matching heading
+              const matchedHeading = localHeadings.find(h => 
+                h.text.trim() === headingText || 
+                headingText.includes(h.text) || 
+                h.text.includes(headingText)
+              );
+            
+              // Generate fallback ID
+              const generateFallbackId = () => {
+                return headingText.toLowerCase().replace(/[^\w]+/g, '-');
+              };
+            
+              // Determine final ID
+              const headingId = matchedHeading?.id || generateFallbackId();
+            
               return (
                 <h4
-                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={headingId}
                   style={{
                     scrollMarginTop: '80px',
-                    fontSize: '1.2em',
+                    fontSize: '1.4em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
@@ -546,21 +626,61 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h5: ({ node, children, ...props }) => {
-              const headingText = React.Children.toArray(children)
-                .map(child => 
-                  typeof child === 'string' ? child : 
-                  typeof child === 'object' && child.props ? child.props.children : ''
-                )
-                .join('');
+              // Helper function to extract text from children
+              const extractText = (child) => {
+                // If child is a string, return it directly
+                if (typeof child === 'string') return child;
+                
+                // If child is a React element, try to extract its text content
+                if (React.isValidElement(child)) {
+                  // If child has children, recursively extract text
+                  if (child.props.children) {
+                    if (Array.isArray(child.props.children)) {
+                      return child.props.children.map(extractText).join('');
+                    }
+                    return extractText(child.props.children);
+                  }
+                  return '';
+                }
+                
+                // For other types, return empty string
+                return '';
+              };
             
-              const matchedHeading = localHeadings.find(h => h.text === headingText);
-              
+              // Convert children to array and extract text
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
+              // Log debugging information
+              console.log('H5 Heading Debug:', {
+                originalChildren: children,
+                extractedText: headingText,
+                allHeadings: localHeadings
+              });
+            
+              // Find matching heading
+              const matchedHeading = localHeadings.find(h => 
+                h.text.trim() === headingText || 
+                headingText.includes(h.text) || 
+                h.text.includes(headingText)
+              );
+            
+              // Generate fallback ID
+              const generateFallbackId = () => {
+                return headingText.toLowerCase().replace(/[^\w]+/g, '-');
+              };
+            
+              // Determine final ID
+              const headingId = matchedHeading?.id || generateFallbackId();
+            
               return (
                 <h5
-                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={headingId}
                   style={{
                     scrollMarginTop: '80px',
-                    fontSize: '1.1em',
+                    fontSize: '1.4em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
@@ -568,21 +688,61 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h6: ({ node, children, ...props }) => {
-              const headingText = React.Children.toArray(children)
-                .map(child => 
-                  typeof child === 'string' ? child : 
-                  typeof child === 'object' && child.props ? child.props.children : ''
-                )
-                .join('');
+              // Helper function to extract text from children
+              const extractText = (child) => {
+                // If child is a string, return it directly
+                if (typeof child === 'string') return child;
+                
+                // If child is a React element, try to extract its text content
+                if (React.isValidElement(child)) {
+                  // If child has children, recursively extract text
+                  if (child.props.children) {
+                    if (Array.isArray(child.props.children)) {
+                      return child.props.children.map(extractText).join('');
+                    }
+                    return extractText(child.props.children);
+                  }
+                  return '';
+                }
+                
+                // For other types, return empty string
+                return '';
+              };
             
-              const matchedHeading = localHeadings.find(h => h.text === headingText);
-              
+              // Convert children to array and extract text
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
+              // Log debugging information
+              console.log('H6 Heading Debug:', {
+                originalChildren: children,
+                extractedText: headingText,
+                allHeadings: localHeadings
+              });
+            
+              // Find matching heading
+              const matchedHeading = localHeadings.find(h => 
+                h.text.trim() === headingText || 
+                headingText.includes(h.text) || 
+                h.text.includes(headingText)
+              );
+            
+              // Generate fallback ID
+              const generateFallbackId = () => {
+                return headingText.toLowerCase().replace(/[^\w]+/g, '-');
+              };
+            
+              // Determine final ID
+              const headingId = matchedHeading?.id || generateFallbackId();
+            
               return (
                 <h6
-                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={headingId}
                   style={{
                     scrollMarginTop: '80px',
-                    fontSize: '1em',
+                    fontSize: '1.4em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
