@@ -470,13 +470,26 @@ const ManualContentPage = ({ setHeadings }) => {
             },
             img: ImageComponent,
             h1: ({ node, children, ...props }) => {
+              // Safely convert children to string, with fallback
+              const headingText = children 
+                ? (Array.isArray(children) 
+                    ? children.map(child => 
+                        typeof child === 'string' 
+                          ? child 
+                          : (child.props?.children || '')
+                      ).join('') 
+                    : (typeof children === 'string' 
+                        ? children 
+                        : children.props?.children || '')
+                ) : '';
+            
               const matchedHeading = localHeadings.find(h => 
-                h.text === props.children.toString() && h.level === 1
+                h.text === headingText && h.level === 1
               );
               
               return (
                 <h1
-                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     transition: 'background-color 0.3s ease'
@@ -488,13 +501,26 @@ const ManualContentPage = ({ setHeadings }) => {
               );
             },
             h2: ({ node, children, ...props }) => {
+              // Safely convert children to string, with fallback
+              const headingText = children 
+                ? (Array.isArray(children) 
+                    ? children.map(child => 
+                        typeof child === 'string' 
+                          ? child 
+                          : (child.props?.children || '')
+                      ).join('') 
+                    : (typeof children === 'string' 
+                        ? children 
+                        : children.props?.children || '')
+                ) : '';
+            
               const matchedHeading = localHeadings.find(h => 
-                h.text === props.children.toString() && h.level === 2
+                h.text === headingText && h.level === 2
               );
               
               return (
                 <h2
-                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.6em',
@@ -507,13 +533,26 @@ const ManualContentPage = ({ setHeadings }) => {
               );
             },
             h3: ({ node, children, ...props }) => {
+              // Safely convert children to string, with fallback
+              const headingText = children 
+                ? (Array.isArray(children) 
+                    ? children.map(child => 
+                        typeof child === 'string' 
+                          ? child 
+                          : (child.props?.children || '')
+                      ).join('') 
+                    : (typeof children === 'string' 
+                        ? children 
+                        : children.props?.children || '')
+                ) : '';
+            
               const matchedHeading = localHeadings.find(h => 
-                h.text === props.children.toString() && h.level === 3
+                h.text === headingText && h.level === 3
               );
               
               return (
                 <h3
-                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.4em',
@@ -526,13 +565,26 @@ const ManualContentPage = ({ setHeadings }) => {
               );
             },
             h4: ({ node, children, ...props }) => {
+              // Safely convert children to string, with fallback
+              const headingText = children 
+                ? (Array.isArray(children) 
+                    ? children.map(child => 
+                        typeof child === 'string' 
+                          ? child 
+                          : (child.props?.children || '')
+                      ).join('') 
+                    : (typeof children === 'string' 
+                        ? children 
+                        : children.props?.children || '')
+                ) : '';
+            
               const matchedHeading = localHeadings.find(h => 
-                h.text === props.children.toString() && h.level === 4
+                h.text === headingText && h.level === 4
               );
               
               return (
                 <h4
-                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.2em',
@@ -545,13 +597,26 @@ const ManualContentPage = ({ setHeadings }) => {
               );
             },
             h5: ({ node, children, ...props }) => {
+              // Safely convert children to string, with fallback
+              const headingText = children 
+                ? (Array.isArray(children) 
+                    ? children.map(child => 
+                        typeof child === 'string' 
+                          ? child 
+                          : (child.props?.children || '')
+                      ).join('') 
+                    : (typeof children === 'string' 
+                        ? children 
+                        : children.props?.children || '')
+                ) : '';
+            
               const matchedHeading = localHeadings.find(h => 
-                h.text === props.children.toString() && h.level === 5
+                h.text === headingText && h.level === 5
               );
               
               return (
                 <h5
-                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.1em',
@@ -564,13 +629,26 @@ const ManualContentPage = ({ setHeadings }) => {
               );
             },
             h6: ({ node, children, ...props }) => {
+              // Safely convert children to string, with fallback
+              const headingText = children 
+                ? (Array.isArray(children) 
+                    ? children.map(child => 
+                        typeof child === 'string' 
+                          ? child 
+                          : (child.props?.children || '')
+                      ).join('') 
+                    : (typeof children === 'string' 
+                        ? children 
+                        : children.props?.children || '')
+                ) : '';
+            
               const matchedHeading = localHeadings.find(h => 
-                h.text === props.children.toString() && h.level === 6
+                h.text === headingText && h.level === 6
               );
               
               return (
                 <h6
-                  id={matchedHeading ? matchedHeading.id : props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1em',
