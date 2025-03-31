@@ -34,15 +34,10 @@ const Sidebar = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const [isFromNavigation, setIsFromNavigation] = useState(false);
   
   const { shouldRefreshSidebar, resetSidebarRefresh } = useSidebarRefresh();
-  // Ref to track if this is the first load
-  const isFirstLoadRef = useRef(true);
-
-  // Ref to track navigation source
-  const isFromNavigationRef = useRef(false);
-
+  // Ref to track if this is the first load or page reload
+  const isInitialLoadRef = useRef(true);
   // Determine if current path is manual
   const isManualPath = () => 
     location.pathname.includes('/manual') || 
@@ -77,30 +72,33 @@ const Sidebar = () => {
     } finally {
       setLoading(false);
       resetSidebarRefresh();
-      isFirstLoadRef.current = false;
+      isInitialLoadRef.current = false;
     }
   };
 
   // Fetch on component mount and specific conditions
   useEffect(() => {
-    // Fetch only on first load or when sidebar refresh is triggered
+    // Conditions to fetch directory tree:
+    // 1. First page load (initial load or page reload)
+    // 2. Explicitly triggered by header button (shouldRefreshSidebar)
     const shouldFetchTree = 
-      isFirstLoadRef.current || 
-      shouldRefreshSidebar ||
-      !treeData; // Fetch if no tree data exists
+      isInitialLoadRef.current || 
+      shouldRefreshSidebar;
 
     if (shouldFetchTree) {
-      // Check if the current navigation is from a header button or initial load
+      // Only fetch if:
+      // - It's the first load
+      // - Or triggered by header button (switching between Procedure/Manual)
       const isHeaderNavigation = 
         location.pathname === '/' || 
         location.pathname === '/manual';
 
-      if (isHeaderNavigation) {
+      if (isInitialLoadRef.current || isHeaderNavigation) {
         fetchDirectoryTree();
       }
     }
+  }, [shouldRefreshSidebar, location.pathname]);
 
-  }, [shouldRefreshSidebar, location.pathname, treeData]);
 
   const handleSelect = (path) => {
     const basePath = isManualPath() ? '/manual/content' : '/content';
