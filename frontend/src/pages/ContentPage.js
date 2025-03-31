@@ -503,11 +503,28 @@ const ContentPage = ({ setHeadings }) => {
             },
             h3: ({ node, ...props }) => {
               const headingText = props.children.toString();
-              const matchedHeading = localHeadings.find(h => h.text === headingText);
+              const matchedHeading = localHeadings.find(h => 
+                h.text.trim() === headingText.trim() || 
+                h.text.includes(headingText) || 
+                headingText.includes(h.text)
+              );
+              
+              const generateFallbackId = () => {
+                return headingText.toLowerCase().replace(/[^\w]+/g, '-');
+              };
+              
+              const headingId = matchedHeading?.id || generateFallbackId();
+              
+              console.log('H3 Heading Debug:', {
+                headingText,
+                matchedHeading,
+                headingId,
+                allHeadings: localHeadings
+              });
               
               return (
                 <h3
-                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={headingId}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.4em',
@@ -519,11 +536,28 @@ const ContentPage = ({ setHeadings }) => {
             },
             h4: ({ node, ...props }) => {
               const headingText = props.children.toString();
-              const matchedHeading = localHeadings.find(h => h.text === headingText);
+              const matchedHeading = localHeadings.find(h => 
+                h.text.trim() === headingText.trim() || 
+                h.text.includes(headingText) || 
+                headingText.includes(h.text)
+              );
+              
+              const generateFallbackId = () => {
+                return headingText.toLowerCase().replace(/[^\w]+/g, '-');
+              };
+              
+              const headingId = matchedHeading?.id || generateFallbackId();
+              
+              console.log('H4 Heading Debug:', {
+                headingText,
+                matchedHeading,
+                headingId,
+                allHeadings: localHeadings
+              });
               
               return (
                 <h4
-                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={headingId}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.2em',
@@ -535,11 +569,28 @@ const ContentPage = ({ setHeadings }) => {
             },
             h5: ({ node, ...props }) => {
               const headingText = props.children.toString();
-              const matchedHeading = localHeadings.find(h => h.text === headingText);
+              const matchedHeading = localHeadings.find(h => 
+                h.text.trim() === headingText.trim() || 
+                h.text.includes(headingText) || 
+                headingText.includes(h.text)
+              );
+              
+              const generateFallbackId = () => {
+                return headingText.toLowerCase().replace(/[^\w]+/g, '-');
+              };
+              
+              const headingId = matchedHeading?.id || generateFallbackId();
+              
+              console.log('H5 Heading Debug:', {
+                headingText,
+                matchedHeading,
+                headingId,
+                allHeadings: localHeadings
+              });
               
               return (
                 <h5
-                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={headingId}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.1em',
@@ -551,11 +602,28 @@ const ContentPage = ({ setHeadings }) => {
             },
             h6: ({ node, ...props }) => {
               const headingText = props.children.toString();
-              const matchedHeading = localHeadings.find(h => h.text === headingText);
+              const matchedHeading = localHeadings.find(h => 
+                h.text.trim() === headingText.trim() || 
+                h.text.includes(headingText) || 
+                headingText.includes(h.text)
+              );
+              
+              const generateFallbackId = () => {
+                return headingText.toLowerCase().replace(/[^\w]+/g, '-');
+              };
+              
+              const headingId = matchedHeading?.id || generateFallbackId();
+              
+              console.log('H6 Heading Debug:', {
+                headingText,
+                matchedHeading,
+                headingId,
+                allHeadings: localHeadings
+              });
               
               return (
                 <h6
-                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={headingId}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1em',
