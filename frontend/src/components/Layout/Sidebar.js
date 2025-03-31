@@ -86,25 +86,26 @@ const Sidebar = () => {
     // Fetch only on first load or when sidebar refresh is triggered
     const shouldFetchTree = 
       isFirstLoadRef.current || 
-      shouldRefreshSidebar;
+      shouldRefreshSidebar ||
+      !treeData; // Fetch if no tree data exists
 
-    if (shouldFetchTree &&  !isFromNavigationRef.current) {
-      fetchDirectoryTree();
+    if (shouldFetchTree) {
+      // Check if the current navigation is from a header button or initial load
+      const isHeaderNavigation = 
+        location.pathname === '/' || 
+        location.pathname === '/manual';
+
+      if (isHeaderNavigation) {
+        fetchDirectoryTree();
+      }
     }
 
-    // Reset navigation flag after effect
-    isFromNavigationRef.current = false;
-  }, [shouldRefreshSidebar, location.pathname]);
+  }, [shouldRefreshSidebar, location.pathname, treeData]);
 
-  // Handle node selection
   const handleSelect = (path) => {
-   // Set navigation flag before navigating
-   isFromNavigationRef.current = true;
-   
     const basePath = isManualPath() ? '/manual/content' : '/content';
     navigate(`${basePath}/${path}`);
   };
-
 
 
   // Render loading state
