@@ -34,7 +34,7 @@ const Sidebar = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [isFromNavigation, setIsFromNavigation] = useState(false);
   
   const { shouldRefreshSidebar, resetSidebarRefresh } = useSidebarRefresh();
   // Ref to track if this is the first load
@@ -85,13 +85,14 @@ const Sidebar = () => {
       isFirstLoadRef.current || 
       shouldRefreshSidebar;
 
-    if (shouldFetchTree) {
+    if (shouldFetchTree && !isFromNavigation) {
       fetchDirectoryTree();
     }
   }, [shouldRefreshSidebar, location.pathname]);
 
   // Handle node selection
   const handleSelect = (path) => {
+    setIsFromNavigation(true);
     const basePath = isManualPath() ? '/manual/content' : '/content';
     navigate(`${basePath}/${path}`);
   };
