@@ -549,6 +549,22 @@ const ContentPage = ({ setHeadings }) => {
                 />
               );
             },
+            h6: ({ node, ...props }) => {
+              const headingText = props.children.toString();
+              const matchedHeading = localHeadings.find(h => h.text === headingText);
+              
+              return (
+                <h6
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  style={{
+                    scrollMarginTop: '80px',
+                    fontSize: '1em',
+                    transition: 'background-color 0.3s ease'
+                  }}
+                  {...props}
+                />
+              );
+            },
           }}
         >
           {content}

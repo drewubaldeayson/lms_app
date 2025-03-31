@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   List,
@@ -66,36 +66,37 @@ const ContentIndex = ({ headings }) => {
     return {
       ...heading,
       id: id,
-      text: cleanText
+      text: cleanText,
+      originalText: heading.text  // Keep original text for reference
     };
   });
 
   // Scroll and highlight logic
-  useEffect(() => {
-    const handleScroll = () => {
-      const headingElements = processedHeadings
-        .map(heading => ({
-          id: heading.id,
-          element: document.getElementById(heading.id)
-        }))
-        .filter(({ element }) => element);
+  const handleScroll = useCallback(() => {
+    const headingElements = processedHeadings
+      .map(heading => ({
+        id: heading.id,
+        element: document.getElementById(heading.id)
+      }))
+      .filter(({ element }) => element);
 
-      const scrollPosition = window.scrollY + 120;
+    const scrollPosition = window.scrollY + 120;
 
-      for (let i = headingElements.length - 1; i >= 0; i--) {
-        const { id, element } = headingElements[i];
-        if (element.offsetTop <= scrollPosition) {
-          setActiveHeading(id);
-          break;
-        }
+    for (let i = headingElements.length - 1; i >= 0; i--) {
+      const { id, element } = headingElements[i];
+      if (element.offsetTop <= scrollPosition) {
+        setActiveHeading(id);
+        break;
       }
-    };
+    }
+  }, [processedHeadings]);
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    handleScroll(); // Initial check
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [processedHeadings]);
+  }, [handleScroll]);
 
   const scrollToHeading = (id) => {
     const element = document.getElementById(id);
@@ -109,6 +110,7 @@ const ContentIndex = ({ headings }) => {
         behavior: 'smooth'
       });
       
+      // Highlight effect
       element.style.backgroundColor = '#fff9c4';
       element.style.transition = 'background-color 0.5s ease';
       
@@ -117,6 +119,8 @@ const ContentIndex = ({ headings }) => {
       }, 1000);
 
       setActiveHeading(id);
+    } else {
+      console.warn(`Element with id ${id} not found`);
     }
   };
 

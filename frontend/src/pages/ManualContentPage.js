@@ -475,7 +475,7 @@ const ManualContentPage = ({ setHeadings }) => {
               
               return (
                 <h1
-                id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     transition: 'background-color 0.3s ease'
@@ -490,7 +490,7 @@ const ManualContentPage = ({ setHeadings }) => {
               
               return (
                 <h2
-                id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.6em',
@@ -506,7 +506,7 @@ const ManualContentPage = ({ setHeadings }) => {
               
               return (
                 <h3
-                id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.4em',
@@ -542,6 +542,22 @@ const ManualContentPage = ({ setHeadings }) => {
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.1em',
+                    transition: 'background-color 0.3s ease'
+                  }}
+                  {...props}
+                />
+              );
+            },
+            h6: ({ node, ...props }) => {
+              const headingText = props.children.toString();
+              const matchedHeading = localHeadings.find(h => h.text === headingText);
+              
+              return (
+                <h6
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  style={{
+                    scrollMarginTop: '80px',
+                    fontSize: '1em',
                     transition: 'background-color 0.3s ease'
                   }}
                   {...props}
