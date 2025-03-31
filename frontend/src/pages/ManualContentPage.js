@@ -467,38 +467,54 @@ const ManualContentPage = ({ setHeadings }) => {
               );
             },
             img: ImageComponent,
-            h1: ({ node, ...props }) => (
-              <h1
-                id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
-                style={{
-                  scrollMarginTop: '80px', // Add scroll margin for smooth scrolling
-                  transition: 'background-color 0.3s ease' // Add transition for highlight effect
-                }}
-                {...props}
-              />
-            ),
-            h2: ({ node, ...props }) => (
-              <h2
-                id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
-                style={{
-                  scrollMarginTop: '80px',
-                  fontSize: '1.6em',
-                  transition: 'background-color 0.3s ease'
-                }}
-                {...props}
-              />
-            ),
-            h3: ({ node, ...props }) => (
-              <h3
-                id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
-                style={{
-                  scrollMarginTop: '80px',
-                  fontSize: '1.4em',
-                  transition: 'background-color 0.3s ease'
-                }}
-                {...props}
-              />
-            ),
+            h1: ({ node, ...props }) => {
+              // Find the corresponding heading from the backend
+              const headingText = props.children.toString();
+              const matchedHeading = headings.find(h => h.text === headingText);
+              
+              return (
+                <h1
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  style={{
+                    scrollMarginTop: '80px',
+                    transition: 'background-color 0.3s ease'
+                  }}
+                  {...props}
+                />
+              );
+            },
+            h2: ({ node, ...props }) => {
+              const headingText = props.children.toString();
+              const matchedHeading = headings.find(h => h.text === headingText);
+              
+              return (
+                <h2
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  style={{
+                    scrollMarginTop: '80px',
+                    fontSize: '1.6em',
+                    transition: 'background-color 0.3s ease'
+                  }}
+                  {...props}
+                />
+              );
+            },
+            h3: ({ node, ...props }) => {
+              const headingText = props.children.toString();
+              const matchedHeading = headings.find(h => h.text === headingText);
+              
+              return (
+                <h3
+                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  style={{
+                    scrollMarginTop: '80px',
+                    fontSize: '1.4em',
+                    transition: 'background-color 0.3s ease'
+                  }}
+                  {...props}
+                />
+              );
+            },
           }}
         >
           {content}

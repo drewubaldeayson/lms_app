@@ -49,18 +49,25 @@ const ContentIndex = ({ headings }) => {
 
   // Enhanced processing to ensure robust ID generation
   const processedHeadings = headings.map((heading, index) => {
-    // Generate a robust ID if not already present
+    // Generate a robust, unique ID
     const generateId = (text) => {
       return text
         .toLowerCase()
         .replace(/[^\w\s-]/g, '')  // Remove special characters
         .replace(/\s+/g, '-')      // Replace spaces with hyphens
         .replace(/-+/g, '-')        // Replace multiple hyphens with single hyphen
-        .replace(/^-|-$/g, '');     // Remove leading/trailing hyphens
+        .replace(/^-|-$/g, '')      // Remove leading/trailing hyphens
+        || `heading-${index}`;      // Fallback ID if generation fails
     };
 
-    // Use existing ID or generate a new one
-    const id = heading.id || generateId(heading.text) || `heading-${index}`;
+    // Ensure unique ID
+    const baseId = generateId(heading.text);
+    let id = baseId;
+    let counter = 1;
+    while (document.getElementById(id)) {
+      id = `${baseId}-${counter}`;
+      counter++;
+    }
 
     return {
       ...heading,
