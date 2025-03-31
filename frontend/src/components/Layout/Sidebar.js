@@ -23,6 +23,8 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
+import { useSidebarRefresh } from '../Sidebar';  
+
 const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
 const DRAWER_WIDTH = 350;
 
@@ -32,6 +34,11 @@ const Sidebar = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  
+  const { shouldRefreshSidebar, resetSidebarRefresh } = useSidebarRefresh();
+  // Ref to track if this is the first load
+  const isFirstLoadRef = useRef(true);
 
   // Determine if current path is manual
   const isManualPath = () => 
@@ -66,19 +73,30 @@ const Sidebar = () => {
       setError(error.message || 'Error loading directory structure');
     } finally {
       setLoading(false);
+      resetSidebarRefresh();
+      isFirstLoadRef.current = false;
     }
   };
 
-  // Fetch on component mount and path change
+  // Fetch on component mount and specific conditions
   useEffect(() => {
-    fetchDirectoryTree();
-  }, [location.pathname]);
+    // Fetch only on first load or when sidebar refresh is triggered
+    const shouldFetchTree = 
+      isFirstLoadRef.current || 
+      shouldRefreshSidebar;
+
+    if (shouldFetchTree) {
+      fetchDirectoryTree();
+    }
+  }, [shouldRefreshSidebar, location.pathname]);
 
   // Handle node selection
   const handleSelect = (path) => {
     const basePath = isManualPath() ? '/manual/content' : '/content';
     navigate(`${basePath}/${path}`);
   };
+
+
 
   // Render loading state
   if (loading) {
