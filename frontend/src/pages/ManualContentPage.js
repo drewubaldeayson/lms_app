@@ -29,6 +29,7 @@ const ManualContentPage = ({ setHeadings }) => {
   const [content, setContent] = useState('');
   const [editableContent, setEditableContent] = useState('');
   const [videos, setVideos] = useState([]);
+  const [localHeadings, setLocalHeadings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -60,6 +61,7 @@ const ManualContentPage = ({ setHeadings }) => {
         if (response.data.success) {
           setContent(response.data.data.content);
           setVideos(response.data.data.videos || []);
+          setLocalHeadings(response.data.data.headings);
           if (setHeadings) {
             setHeadings(response.data.data.headings);
           }
@@ -468,13 +470,12 @@ const ManualContentPage = ({ setHeadings }) => {
             },
             img: ImageComponent,
             h1: ({ node, ...props }) => {
-              // Find the corresponding heading from the backend
-              const headingText = props.children.toString();
-              const matchedHeading = headings.find(h => h.text === headingText);
+              const headingText = cleanMarkdownHeading(props.children.toString());
+              const matchedHeading = localHeadings.find(h => h.text === headingText);
               
               return (
                 <h1
-                  id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     transition: 'background-color 0.3s ease'
@@ -484,12 +485,12 @@ const ManualContentPage = ({ setHeadings }) => {
               );
             },
             h2: ({ node, ...props }) => {
-              const headingText = props.children.toString();
-              const matchedHeading = headings.find(h => h.text === headingText);
+              const headingText = cleanMarkdownHeading(props.children.toString());
+              const matchedHeading = localHeadings.find(h => h.text === headingText);
               
               return (
                 <h2
-                  id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.6em',
@@ -501,11 +502,11 @@ const ManualContentPage = ({ setHeadings }) => {
             },
             h3: ({ node, ...props }) => {
               const headingText = props.children.toString();
-              const matchedHeading = headings.find(h => h.text === headingText);
+              const matchedHeading = localHeadings.find(h => h.text === headingText);
               
               return (
                 <h3
-                  id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={matchedHeading?.id || headingText.toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.4em',
