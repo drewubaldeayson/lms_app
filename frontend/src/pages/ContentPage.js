@@ -474,7 +474,7 @@ const ContentPage = ({ setHeadings }) => {
               
               return (
                 <h1
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     transition: 'background-color 0.3s ease'
@@ -489,7 +489,7 @@ const ContentPage = ({ setHeadings }) => {
               
               return (
                 <h2
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.6em',
@@ -505,7 +505,7 @@ const ContentPage = ({ setHeadings }) => {
               
               return (
                 <h3
-                  id={matchedHeading ? matchedHeading.id : headingText.toLowerCase().replace(/[^\w]+/g, '-')}
+                  id={props.children.toString().toLowerCase().replace(/[^\w]+/g, '-')}
                   style={{
                     scrollMarginTop: '80px',
                     fontSize: '1.4em',

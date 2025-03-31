@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-
 // Function to clean markdown from headings
 const cleanMarkdownHeading = (heading) => {
   // Remove code backticks
@@ -42,14 +41,15 @@ const IndexItem = styled(ListItem)(({ theme, active }) => ({
   }),
 }));
 
-
-
 const ContentIndex = ({ headings }) => {
   const [activeHeading, setActiveHeading] = useState('');
 
-  // Enhanced processing to ensure robust ID generation
+  // Process headings to remove markdown and generate IDs
   const processedHeadings = headings.map((heading, index) => {
-    // Generate a robust, unique ID
+    // Clean the heading text
+    const cleanText = cleanMarkdownHeading(heading.text);
+    
+    // Generate a robust ID
     const generateId = (text) => {
       return text
         .toLowerCase()
@@ -60,8 +60,7 @@ const ContentIndex = ({ headings }) => {
         || `heading-${index}`;      // Fallback ID if generation fails
     };
 
-    // Ensure unique ID
-    const baseId = generateId(heading.text);
+    const baseId = generateId(cleanText);
     let id = baseId;
     let counter = 1;
     while (document.getElementById(id)) {
@@ -72,7 +71,7 @@ const ContentIndex = ({ headings }) => {
     return {
       ...heading,
       id: id,
-      text: heading.text
+      text: cleanText
     };
   });
 
@@ -86,7 +85,7 @@ const ContentIndex = ({ headings }) => {
         }))
         .filter(({ element }) => element);
 
-      const scrollPosition = window.scrollY + 120; // Increased offset for better detection
+      const scrollPosition = window.scrollY + 120;
 
       for (let i = headingElements.length - 1; i >= 0; i--) {
         const { id, element } = headingElements[i];
@@ -97,21 +96,16 @@ const ContentIndex = ({ headings }) => {
       }
     };
 
-     // Add scroll event listener
-     window.addEventListener('scroll', handleScroll);
-    
-     // Initial check
-     handleScroll();
- 
-     // Cleanup
-     return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [processedHeadings]);
 
   const scrollToHeading = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      // Improved scrolling with more reliable offset
-      const headerOffset = 80; // Adjust based on your header height
+      const headerOffset = 80;
       const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
       const offsetPosition = elementPosition - headerOffset;
 
@@ -120,7 +114,6 @@ const ContentIndex = ({ headings }) => {
         behavior: 'smooth'
       });
       
-      // Enhanced highlight effect
       element.style.backgroundColor = '#fff9c4';
       element.style.transition = 'background-color 0.5s ease';
       
@@ -131,7 +124,6 @@ const ContentIndex = ({ headings }) => {
       setActiveHeading(id);
     }
   };
-
 
   return (
     <Paper
@@ -160,7 +152,7 @@ const ContentIndex = ({ headings }) => {
       <List dense>
         {processedHeadings.map((heading, index) => (
           <IndexItem
-            key={heading.id || index}
+            key={heading.id}
             onClick={() => scrollToHeading(heading.id)}
             active={activeHeading === heading.id}
             sx={{
