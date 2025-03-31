@@ -40,6 +40,9 @@ const Sidebar = () => {
   // Ref to track if this is the first load
   const isFirstLoadRef = useRef(true);
 
+  // Ref to track navigation source
+  const isFromNavigationRef = useRef(false);
+
   // Determine if current path is manual
   const isManualPath = () => 
     location.pathname.includes('/manual') || 
@@ -85,14 +88,19 @@ const Sidebar = () => {
       isFirstLoadRef.current || 
       shouldRefreshSidebar;
 
-    if (shouldFetchTree && !isFromNavigation) {
+    if (shouldFetchTree &&  !isFromNavigationRef.current) {
       fetchDirectoryTree();
     }
+
+    // Reset navigation flag after effect
+    isFromNavigationRef.current = false;
   }, [shouldRefreshSidebar, location.pathname]);
 
   // Handle node selection
   const handleSelect = (path) => {
-    setIsFromNavigation(true);
+   // Set navigation flag before navigating
+   isFromNavigationRef.current = true;
+   
     const basePath = isManualPath() ? '/manual/content' : '/content';
     navigate(`${basePath}/${path}`);
   };

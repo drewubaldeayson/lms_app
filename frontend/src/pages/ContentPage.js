@@ -471,7 +471,25 @@ const ContentPage = ({ setHeadings }) => {
             },
             img: ImageComponent,
             h1: ({ node, children, ...props }) => {
-              const headingText = props.children.toString();
+              // Safely extract text, handling various child types
+              const extractText = (child) => {
+                if (child === null || child === undefined) return '';
+                if (typeof child === 'string') return child;
+                if (React.isValidElement(child)) {
+                  if (typeof child.props.children === 'string') return child.props.children;
+                  if (Array.isArray(child.props.children)) {
+                    return child.props.children.map(extractText).join('');
+                  }
+                  return extractText(child.props.children);
+                }
+                return '';
+              };
+            
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
               const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 1);
               
               return (
@@ -486,7 +504,25 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h2: ({ node, children, ...props }) => {
-              const headingText = props.children.toString();
+              // Safely extract text, handling various child types
+              const extractText = (child) => {
+                if (child === null || child === undefined) return '';
+                if (typeof child === 'string') return child;
+                if (React.isValidElement(child)) {
+                  if (typeof child.props.children === 'string') return child.props.children;
+                  if (Array.isArray(child.props.children)) {
+                    return child.props.children.map(extractText).join('');
+                  }
+                  return extractText(child.props.children);
+                }
+                return '';
+              };
+            
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
               const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 2);
               
               return (
@@ -502,7 +538,25 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h3: ({ node, children, ...props }) => {
-              const headingText = props.children.toString();
+              // Safely extract text, handling various child types
+              const extractText = (child) => {
+                if (child === null || child === undefined) return '';
+                if (typeof child === 'string') return child;
+                if (React.isValidElement(child)) {
+                  if (typeof child.props.children === 'string') return child.props.children;
+                  if (Array.isArray(child.props.children)) {
+                    return child.props.children.map(extractText).join('');
+                  }
+                  return extractText(child.props.children);
+                }
+                return '';
+              };
+            
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
               const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 3);
               
               return (
@@ -518,7 +572,25 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h4: ({ node, children, ...props }) => {
-              const headingText = props.children.toString();
+              // Safely extract text, handling various child types
+              const extractText = (child) => {
+                if (child === null || child === undefined) return '';
+                if (typeof child === 'string') return child;
+                if (React.isValidElement(child)) {
+                  if (typeof child.props.children === 'string') return child.props.children;
+                  if (Array.isArray(child.props.children)) {
+                    return child.props.children.map(extractText).join('');
+                  }
+                  return extractText(child.props.children);
+                }
+                return '';
+              };
+            
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
               const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 4);
               
               return (
@@ -534,7 +606,25 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h5: ({ node, children, ...props }) => {
-              const headingText = props.children.toString();
+              // Safely extract text, handling various child types
+              const extractText = (child) => {
+                if (child === null || child === undefined) return '';
+                if (typeof child === 'string') return child;
+                if (React.isValidElement(child)) {
+                  if (typeof child.props.children === 'string') return child.props.children;
+                  if (Array.isArray(child.props.children)) {
+                    return child.props.children.map(extractText).join('');
+                  }
+                  return extractText(child.props.children);
+                }
+                return '';
+              };
+            
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
               const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 5);
               
               return (
@@ -550,7 +640,25 @@ const ContentPage = ({ setHeadings }) => {
               );
             },
             h6: ({ node, children, ...props }) => {
-              const headingText = props.children.toString();
+              // Safely extract text, handling various child types
+              const extractText = (child) => {
+                if (child === null || child === undefined) return '';
+                if (typeof child === 'string') return child;
+                if (React.isValidElement(child)) {
+                  if (typeof child.props.children === 'string') return child.props.children;
+                  if (Array.isArray(child.props.children)) {
+                    return child.props.children.map(extractText).join('');
+                  }
+                  return extractText(child.props.children);
+                }
+                return '';
+              };
+            
+              const headingText = React.Children.toArray(children)
+                .map(extractText)
+                .join('')
+                .trim();
+            
               const matchedHeading = localHeadings.find(h => h.text === headingText && h.level === 6);
               
               return (
