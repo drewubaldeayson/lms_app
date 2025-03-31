@@ -137,12 +137,18 @@ router.get('/file/:path(*)', async (req, res) => {
         // Remove code backticks
         .replace(/`([^`]+)`/g, '$1')
         // Remove links
-        .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+        .replace(/$$([^$$]+)\]$$[^$$]+\)/g, '$1')
         .trim();
 
       // Generate base ID
-      let baseId = cleanText.toLowerCase().replace(/[^\w]+/g, '-');
+      let baseId = cleanText
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')  // Remove special characters
+      .replace(/\s+/g, '-')      // Replace spaces with hyphens
+      .replace(/-+/g, '-')        // Replace multiple hyphens with single hyphen
+      .replace(/^-|-$/g, '');     // Remove leading/trailing hyphens
 
+      
       // Ensure unique ID
       let id = baseId;
       let counter = 1;

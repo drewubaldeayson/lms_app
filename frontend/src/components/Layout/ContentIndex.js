@@ -48,23 +48,33 @@ const ContentIndex = ({ headings }) => {
   const [activeHeading, setActiveHeading] = useState('');
 
   // Process headings to remove markdown
-  const processedHeadings = headings.map((heading, index) => ({
-    ...heading,
-    text: cleanMarkdownHeading(heading.text),
-    // Ensure unique ID by adding index if needed
-    id: cleanMarkdownHeading(heading.text)
+  const processedHeadings = headings.map((heading, index) => {
+    const cleanText = cleanMarkdownHeading(heading.text);
+    
+    // Generate a robust ID
+    const baseId = cleanText
       .toLowerCase()
-      .replace(/[^\w]+/g, '-') + 
-      (heading.level > 1 ? `-${index}` : '')
-  }));
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    return {
+      ...heading,
+      text: cleanText,
+      id: baseId || `heading-${index}`
+    };
+  });
 
   // Function to handle scroll and highlight active section
   useEffect(() => {
     const handleScroll = () => {
-      const headingElements = processedHeadings .map(heading => ({
-        id: heading.id,
-        element: document.getElementById(heading.id)
-      })).filter(({ element }) => element);
+      const headingElements = processedHeadings
+        .map(heading => ({
+          id: heading.id,
+          element: document.getElementById(heading.id)
+        }))
+        .filter(({ element }) => element);
 
       const scrollPosition = window.scrollY + 100; // Offset for better detection
 
@@ -89,7 +99,7 @@ const ContentIndex = ({ headings }) => {
     const element = document.getElementById(id);
     if (element) {
       // Scroll to element
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       
       // Add temporary highlight effect
       element.style.backgroundColor = '#fff9c4'; // Light yellow background
