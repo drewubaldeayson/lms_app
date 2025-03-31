@@ -144,69 +144,84 @@ const Sidebar = () => {
   const location = useLocation();
   const { shouldRefreshSidebar, resetSidebarRefresh } = useSidebarRefresh();
 
-  useEffect(() => {
-    const fetchDirectoryTree = async () => {
 
-      try{
-        setLoading(true);
-        setError(null);
+  // Determine if the current path is a manual path
+  const isManualPath = () => 
+    location.pathname.startsWith('/manual') || 
+    location.pathname === '/manual' ||
+    location.pathname.includes('/manual/content');
 
-        const isManualPath = 
-          location.pathname.startsWith('/manual') || 
-          location.pathname === '/manual';
-
-        const endpoint = isManualPath
-          ? `${API_URL}/api/content/tree/manual`
-          : `${API_URL}/api/content/tree`;
-
-
-        const response = await axios.get(endpoint, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+    useEffect(() => {
+      const fetchDirectoryTree = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+  
+          // Determine the correct endpoint
+          const endpoint = isManualPath()
+            ? `${API_URL}/api/content/tree/manual`
+            : `${API_URL}/api/content/tree`;
+  
+          const response = await axios.get(endpoint, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+  
+          if (response.data.success) {
+            console.log('Tree data:', response.data.data);
+            setTreeData(response.data.data);
+          } else {
+            setError('Failed to load directory structure');
           }
-        });
-
-        if (response.data.success) {
-          console.log('Tree data:', response.data.data);
-          setTreeData(response.data.data);
+        } catch (error) {
+          console.error('Error fetching tree:', error);
+          setError('Error loading directory structure');
+        } finally {
+          setLoading(false);
           resetSidebarRefresh();
-        } else {
-          setError('Failed to load directory structure');
         }
-      } catch (error) {
-        console.error('Error fetching tree:', error);
-        setError('Error loading directory structure');
-      } finally {
-        setLoading(false);
-        resetSidebarRefresh();
+      };
+  
+      // Always fetch on initial load or when certain conditions are met
+      const shouldFetch = 
+        !treeData ||  // No existing tree data
+        shouldRefreshSidebar ||  // Explicit refresh triggered
+        location.pathname === '/' ||  // Home page
+        location.pathname === '/manual' ||  // Manual home page
+        location.pathname.startsWith('/content') ||  // Content pages
+        location.pathname.startsWith('/manual/content');  // Manual content pages
+  
+      if (shouldFetch) {
+        fetchDirectoryTree();
       }
-    };
+    }, [
+      location.pathname, 
+      shouldRefreshSidebar,
+      treeData,
+      resetSidebarRefresh
+  ]);
 
-     // Conditions to fetch directory tree
-    const shouldFetch = 
-      shouldRefreshSidebar || 
-      location.pathname === '/' || 
-      location.pathname === '/manual' ||
-      location.pathname.startsWith('/content') ||
-      location.pathname.startsWith('/manual/content');
-
-    if (shouldFetch) {
-      fetchDirectoryTree();
+  // Persist sidebar state across page reloads
+  useEffect(() => {
+    // Check if we need to restore the previous path
+    const savedPath = localStorage.getItem('lastSidebarPath');
+    if (savedPath && !location.pathname) {
+      navigate(savedPath);
     }
-  }, [ location.pathname, 
-    shouldRefreshSidebar,
-    resetSidebarRefresh]);
+
+    // Save current path for potential reload
+    localStorage.setItem('lastSidebarPath', location.pathname);
+  }, [location.pathname, navigate]);
+
 
   const handleSelect = (path) => {
     console.log('Handling selection:', path);
 
-    const isManualPath = location.pathname.startsWith('/manual');
+    const basePath = isManualPath() ? '/manual/content' : '/content';
+    const fullPath = `${basePath}/${path}`;
   
-    if (isManualPath) {
-      navigate(`/manual/content/${path}`);
-    } else {
-      navigate(`/content/${path}`);
-    }
+    navigate(fullPath);
   };
 
   if (loading) {
@@ -268,9 +283,11 @@ const Sidebar = () => {
           <List>
             <TreeNode
               node={treeData}
-              selectedPath={location.pathname.includes('/manual') 
-                ? location.pathname.replace('/manual/content/', '') 
-                : location.pathname.replace('/content/', '')}
+              selectedPath={
+                isManualPath() 
+                  ? location.pathname.replace('/manual/content/', '') 
+                  : location.pathname.replace('/content/', '')
+              }
               onSelect={handleSelect}
             />
           </List>

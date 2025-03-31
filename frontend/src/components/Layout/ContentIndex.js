@@ -47,13 +47,29 @@ const IndexItem = styled(ListItem)(({ theme, active }) => ({
 const ContentIndex = ({ headings }) => {
   const [activeHeading, setActiveHeading] = useState('');
 
-  // Minimal processing - just ensure unique IDs
-  const processedHeadings = headings.map((heading, index) => ({
-    ...heading,
-    id: heading.id || `heading-${index}`
-  }));
+  // Enhanced processing to ensure robust ID generation
+  const processedHeadings = headings.map((heading, index) => {
+    // Generate a robust ID if not already present
+    const generateId = (text) => {
+      return text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')  // Remove special characters
+        .replace(/\s+/g, '-')      // Replace spaces with hyphens
+        .replace(/-+/g, '-')        // Replace multiple hyphens with single hyphen
+        .replace(/^-|-$/g, '');     // Remove leading/trailing hyphens
+    };
 
-  /// Function to handle scroll and highlight active section
+    // Use existing ID or generate a new one
+    const id = heading.id || generateId(heading.text) || `heading-${index}`;
+
+    return {
+      ...heading,
+      id: id,
+      text: heading.text
+    };
+  });
+
+  // Scroll and highlight logic
   useEffect(() => {
     const handleScroll = () => {
       const headingElements = processedHeadings
@@ -63,7 +79,7 @@ const ContentIndex = ({ headings }) => {
         }))
         .filter(({ element }) => element);
 
-      const scrollPosition = window.scrollY + 100; // Offset for better detection
+      const scrollPosition = window.scrollY + 120; // Increased offset for better detection
 
       for (let i = headingElements.length - 1; i >= 0; i--) {
         const { id, element } = headingElements[i];
@@ -74,32 +90,33 @@ const ContentIndex = ({ headings }) => {
       }
     };
 
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
+     // Add scroll event listener
+     window.addEventListener('scroll', handleScroll);
     
-    // Initial check
-    handleScroll();
-
-    // Cleanup
-    return () => window.removeEventListener('scroll', handleScroll);
+     // Initial check
+     handleScroll();
+ 
+     // Cleanup
+     return () => window.removeEventListener('scroll', handleScroll);
   }, [processedHeadings]);
-
 
   const scrollToHeading = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      // Scroll to element with offset
-      const offset = 80; // Adjust based on your header height
+      // Improved scrolling with more reliable offset
+      const headerOffset = 80; // Adjust based on your header height
       const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = elementPosition - offset;
+      const offsetPosition = elementPosition - headerOffset;
 
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth'
       });
       
-      // Temporary highlight effect
+      // Enhanced highlight effect
       element.style.backgroundColor = '#fff9c4';
+      element.style.transition = 'background-color 0.5s ease';
+      
       setTimeout(() => {
         element.style.backgroundColor = 'transparent';
       }, 1000);
@@ -107,7 +124,8 @@ const ContentIndex = ({ headings }) => {
       setActiveHeading(id);
     }
   };
-  
+
+
   return (
     <Paper
       sx={{
@@ -135,7 +153,7 @@ const ContentIndex = ({ headings }) => {
       <List dense>
         {processedHeadings.map((heading, index) => (
           <IndexItem
-            key={index}
+            key={heading.id || index}
             onClick={() => scrollToHeading(heading.id)}
             active={activeHeading === heading.id}
             sx={{
