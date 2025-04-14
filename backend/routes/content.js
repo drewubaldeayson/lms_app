@@ -4,7 +4,7 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs').promises;
 const dirTree = require('directory-tree'); // Add this import
-const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au';
 const VideoContent = require('../models/VideoContent');
 
 // Get directory tree

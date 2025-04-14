@@ -31,7 +31,7 @@ import axios from 'axios';
 import debounce from 'lodash/debounce';
 import { useSidebarRefresh } from '../Sidebar';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',

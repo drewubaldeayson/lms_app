@@ -1,7 +1,7 @@
 // frontend/src/services/api.service.js
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au';
 
 const getAuthHeader = () => ({
   headers: {
