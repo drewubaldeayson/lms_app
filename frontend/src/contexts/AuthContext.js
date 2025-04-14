@@ -5,7 +5,7 @@ import { CircularProgress, Box } from '@mui/material'
 
 const AuthContext = createContext(null);
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au:5000';
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);

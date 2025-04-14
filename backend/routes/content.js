@@ -4,7 +4,7 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs').promises;
 const dirTree = require('directory-tree'); // Add this import
-const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au:5000';
 const VideoContent = require('../models/VideoContent');
 
 // Get directory tree
@@ -148,7 +148,7 @@ router.get('/file/:path(*)', async (req, res) => {
       .replace(/-+/g, '-')        // Replace multiple hyphens with single hyphen
       .replace(/^-|-$/g, '');     // Remove leading/trailing hyphens
 
-      
+
       // Ensure unique ID
       let id = baseId;
       let counter = 1;

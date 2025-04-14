@@ -15,7 +15,7 @@ import axios from 'axios';
 import CompanyLogo from '../assets/images/login-logo.png'; 
 
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://170.64.202.114:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au:5000';
 
 
 const LoginPage = () => {
