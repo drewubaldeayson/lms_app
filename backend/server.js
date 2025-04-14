@@ -24,8 +24,10 @@ connectDB();
 
 // Middleware
 app.use(cors({
-    origin: ['http://170.64.202.114', 'http://170.64.202.114:80'],
-    credentials: true
+  origin: ['http://170.64.202.114', 'http://170.64.202.114:80',
+    'http://docs.muli.com.au',
+    'https://docs.muli.com.au'],
+  credentials: true
 }));
 app.use(express.json());
 

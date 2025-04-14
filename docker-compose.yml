@@ -11,7 +11,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - REACT_APP_API_URL=http://170.64.202.114:5000
+      - REACT_APP_API_URL=http://docs.muli.com.au:5000
     depends_on:
       - backend
     volumes:
