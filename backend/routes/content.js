@@ -30,7 +30,8 @@ router.get('/tree', (req, res) => {
       const customSort = (a, b) => {
         // Function to extract full numeric prefix
         const extractNumericPrefix = (filename) => {
-          const match = filename.match(/^Menu (\d+(?:\.\d+)*)/);
+          // Match both main menu and sub-menu patterns
+          const match = filename.match(/^(?:Menu )?(\d+(?:\.\d+)*)/);
           return match ? match[1] : '';
         };
       
@@ -374,7 +375,8 @@ router.get('/tree/manual', (req, res) => {
       const customSort = (a, b) => {
         // Function to extract full numeric prefix
         const extractNumericPrefix = (filename) => {
-          const match = filename.match(/^Menu (\d+(?:\.\d+)*)/);
+          // Match both main menu and sub-menu patterns
+          const match = filename.match(/^(?:Menu )?(\d+(?:\.\d+)*)/);
           return match ? match[1] : '';
         };
       
