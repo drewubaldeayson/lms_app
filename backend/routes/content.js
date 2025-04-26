@@ -28,41 +28,40 @@ router.get('/tree', (req, res) => {
       
       // Custom sorting function
       const customSort = (a, b) => {
-        // Function to extract numeric parts from filename
-        const extractNumericParts = (filename) => {
-          // Match numeric prefixes like 1.0, 10.5, etc.
-          const match = filename.match(/^(\d+(?:\.\d+)?)/);
-          if (match) {
-            // Split the numeric prefix into parts
-            return match[1].split('.').map(Number);
-          }
-          return [];
+        // Function to extract full numeric prefix
+        const extractNumericPrefix = (filename) => {
+          const match = filename.match(/^Menu (\d+(?:\.\d+)*)/);
+          return match ? match[1] : '';
         };
       
-        const prefixA = extractNumericParts(a.name);
-        const prefixB = extractNumericParts(b.name);
+        const prefixA = extractNumericPrefix(a.name);
+        const prefixB = extractNumericPrefix(b.name);
       
         // If both have numeric prefixes, compare them
-        if (prefixA.length > 0 && prefixB.length > 0) {
-          // Compare major number first
-          if (prefixA[0] !== prefixB[0]) {
-            return prefixA[0] - prefixB[0];
-          }
-          
-          // If major numbers are the same, compare decimal part
-          if (prefixA.length > 1 && prefixB.length > 1) {
-            return prefixA[1] - prefixB[1];
-          }
-          
-          // Prefer longer prefixes (e.g., 1.1 comes before 1)
-          return prefixB.length - prefixA.length;
-        }
-        
-        // If one has a numeric prefix and the other doesn't
-        if (prefixA.length > 0) return -1;
-        if (prefixB.length > 0) return 1;
+        if (prefixA && prefixB) {
+          // Split numeric parts and convert to numbers
+          const partsA = prefixA.split('.').map(Number);
+          const partsB = prefixB.split('.').map(Number);
       
-        // If no numeric prefix, fallback to alphabetical
+          // Compare each numeric part
+          for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+            const numA = partsA[i] || 0;
+            const numB = partsB[i] || 0;
+      
+            if (numA !== numB) {
+              return numA - numB;
+            }
+          }
+      
+          // If all parts are equal, maintain original order
+          return 0;
+        }
+      
+        // If one has a numeric prefix and the other doesn't
+        if (prefixA) return -1;
+        if (prefixB) return 1;
+      
+        // Fallback to alphabetical sorting
         return a.name.localeCompare(b.name);
       };
     
@@ -373,41 +372,40 @@ router.get('/tree/manual', (req, res) => {
       
       // Custom sorting function
       const customSort = (a, b) => {
-        // Function to extract numeric parts from filename
-        const extractNumericParts = (filename) => {
-          // Match numeric prefixes like 1.0, 10.5, etc.
-          const match = filename.match(/^(\d+(?:\.\d+)?)/);
-          if (match) {
-            // Split the numeric prefix into parts
-            return match[1].split('.').map(Number);
-          }
-          return [];
+        // Function to extract full numeric prefix
+        const extractNumericPrefix = (filename) => {
+          const match = filename.match(/^Menu (\d+(?:\.\d+)*)/);
+          return match ? match[1] : '';
         };
       
-        const prefixA = extractNumericParts(a.name);
-        const prefixB = extractNumericParts(b.name);
+        const prefixA = extractNumericPrefix(a.name);
+        const prefixB = extractNumericPrefix(b.name);
       
         // If both have numeric prefixes, compare them
-        if (prefixA.length > 0 && prefixB.length > 0) {
-          // Compare major number first
-          if (prefixA[0] !== prefixB[0]) {
-            return prefixA[0] - prefixB[0];
-          }
-          
-          // If major numbers are the same, compare decimal part
-          if (prefixA.length > 1 && prefixB.length > 1) {
-            return prefixA[1] - prefixB[1];
-          }
-          
-          // Prefer longer prefixes (e.g., 1.1 comes before 1)
-          return prefixB.length - prefixA.length;
-        }
-        
-        // If one has a numeric prefix and the other doesn't
-        if (prefixA.length > 0) return -1;
-        if (prefixB.length > 0) return 1;
+        if (prefixA && prefixB) {
+          // Split numeric parts and convert to numbers
+          const partsA = prefixA.split('.').map(Number);
+          const partsB = prefixB.split('.').map(Number);
       
-        // If no numeric prefix, fallback to alphabetical
+          // Compare each numeric part
+          for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+            const numA = partsA[i] || 0;
+            const numB = partsB[i] || 0;
+      
+            if (numA !== numB) {
+              return numA - numB;
+            }
+          }
+      
+          // If all parts are equal, maintain original order
+          return 0;
+        }
+      
+        // If one has a numeric prefix and the other doesn't
+        if (prefixA) return -1;
+        if (prefixB) return 1;
+      
+        // Fallback to alphabetical sorting
         return a.name.localeCompare(b.name);
       };
     
