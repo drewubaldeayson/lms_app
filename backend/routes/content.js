@@ -28,24 +28,42 @@ router.get('/tree', (req, res) => {
       
       // Custom sorting function
       const customSort = (a, b) => {
-        // Extract numeric prefixes
-        const extractPrefix = (filename) => {
-          const match = filename.match(/^(\d+(?:\.\d+)*)/);
-          return match ? match[1].split('.').map(Number) : [];
-        };
-    
-        const prefixA = extractPrefix(a.name);
-        const prefixB = extractPrefix(b.name);
-    
-        // Compare numeric prefixes
-        for (let i = 0; i < Math.min(prefixA.length, prefixB.length); i++) {
-          if (prefixA[i] !== prefixB[i]) {
-            return prefixA[i] - prefixB[i];
+        // Function to extract numeric parts from filename
+        const extractNumericParts = (filename) => {
+          // Match numeric prefixes like 1.0, 10.5, etc.
+          const match = filename.match(/^(\d+(?:\.\d+)?)/);
+          if (match) {
+            // Split the numeric prefix into parts
+            return match[1].split('.').map(Number);
           }
+          return [];
+        };
+      
+        const prefixA = extractNumericParts(a.name);
+        const prefixB = extractNumericParts(b.name);
+      
+        // If both have numeric prefixes, compare them
+        if (prefixA.length > 0 && prefixB.length > 0) {
+          // Compare major number first
+          if (prefixA[0] !== prefixB[0]) {
+            return prefixA[0] - prefixB[0];
+          }
+          
+          // If major numbers are the same, compare decimal part
+          if (prefixA.length > 1 && prefixB.length > 1) {
+            return prefixA[1] - prefixB[1];
+          }
+          
+          // Prefer longer prefixes (e.g., 1.1 comes before 1)
+          return prefixB.length - prefixA.length;
         }
-    
-        // If prefixes are the same, compare lengths
-        return prefixA.length - prefixB.length;
+        
+        // If one has a numeric prefix and the other doesn't
+        if (prefixA.length > 0) return -1;
+        if (prefixB.length > 0) return 1;
+      
+        // If no numeric prefix, fallback to alphabetical
+        return a.name.localeCompare(b.name);
       };
     
       // Sort children if they exist
@@ -355,24 +373,42 @@ router.get('/tree/manual', (req, res) => {
       
       // Custom sorting function
       const customSort = (a, b) => {
-        // Extract numeric prefixes
-        const extractPrefix = (filename) => {
-          const match = filename.match(/^(\d+(?:\.\d+)*)/);
-          return match ? match[1].split('.').map(Number) : [];
-        };
-    
-        const prefixA = extractPrefix(a.name);
-        const prefixB = extractPrefix(b.name);
-    
-        // Compare numeric prefixes
-        for (let i = 0; i < Math.min(prefixA.length, prefixB.length); i++) {
-          if (prefixA[i] !== prefixB[i]) {
-            return prefixA[i] - prefixB[i];
+        // Function to extract numeric parts from filename
+        const extractNumericParts = (filename) => {
+          // Match numeric prefixes like 1.0, 10.5, etc.
+          const match = filename.match(/^(\d+(?:\.\d+)?)/);
+          if (match) {
+            // Split the numeric prefix into parts
+            return match[1].split('.').map(Number);
           }
+          return [];
+        };
+      
+        const prefixA = extractNumericParts(a.name);
+        const prefixB = extractNumericParts(b.name);
+      
+        // If both have numeric prefixes, compare them
+        if (prefixA.length > 0 && prefixB.length > 0) {
+          // Compare major number first
+          if (prefixA[0] !== prefixB[0]) {
+            return prefixA[0] - prefixB[0];
+          }
+          
+          // If major numbers are the same, compare decimal part
+          if (prefixA.length > 1 && prefixB.length > 1) {
+            return prefixA[1] - prefixB[1];
+          }
+          
+          // Prefer longer prefixes (e.g., 1.1 comes before 1)
+          return prefixB.length - prefixA.length;
         }
-    
-        // If prefixes are the same, compare lengths
-        return prefixA.length - prefixB.length;
+        
+        // If one has a numeric prefix and the other doesn't
+        if (prefixA.length > 0) return -1;
+        if (prefixB.length > 0) return 1;
+      
+        // If no numeric prefix, fallback to alphabetical
+        return a.name.localeCompare(b.name);
       };
     
       // Sort children if they exist
