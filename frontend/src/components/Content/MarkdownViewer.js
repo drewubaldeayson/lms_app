@@ -2,7 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Box} from '@mui/material';
 import InfoBox from './InfoBox';
 
 const MarkdownViewer = ({ content }) => {
@@ -11,71 +11,58 @@ const MarkdownViewer = ({ content }) => {
       <ReactMarkdown
         components={{
           table: ({node, ...props}) => (
-            <TableContainer component={Paper} sx={{ mb: 2 }}>
-              <Table 
-                sx={{ 
-                  minWidth: 650, 
-                  border: '1px solid rgba(224, 224, 224, 1)' 
-                }}
-              >
-                {props.children}
-              </Table>
-            </TableContainer>
+            <table 
+              style={{
+                width: '100%', 
+                borderCollapse: 'collapse', 
+                border: '1px solid #ddd'
+              }}
+            >
+              {props.children}
+            </table>
           ),
           thead: ({node, ...props}) => (
-            <TableHead 
-              sx={{ 
-                backgroundColor: '#f5f5f5',
-                '& th': {
-                  fontWeight: 'bold',
-                  borderBottom: '2px solid rgba(224, 224, 224, 1)'
-                }
+            <thead 
+              style={{ 
+                backgroundColor: '#f2f2f2' 
               }}
             >
-              <TableRow>{props.children}</TableRow>
-            </TableHead>
+              {props.children}
+            </thead>
           ),
           tbody: ({node, ...props}) => (
-            <TableBody>
-              {props.children}
-            </TableBody>
+            <tbody>{props.children}</tbody>
           ),
           tr: ({node, ...props}) => (
-            <TableRow 
-              sx={{ 
-                '&:nth-of-type(even)': { 
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)' 
-                },
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.08)'
-                }
+            <tr 
+              style={{
+                borderBottom: '1px solid #ddd'
               }}
             >
               {props.children}
-            </TableRow>
+            </tr>
           ),
           th: ({node, ...props}) => (
-            <TableCell 
-              sx={{ 
-                borderRight: '1px solid rgba(224, 224, 224, 1)',
-                borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                padding: '12px',
-                fontWeight: 'bold'
+            <th 
+              style={{
+                border: '1px solid #ddd',
+                padding: '8px',
+                textAlign: 'center'
               }}
             >
               {props.children}
-            </TableCell>
+            </th>
           ),
           td: ({node, ...props}) => (
-            <TableCell 
-              sx={{ 
-                borderRight: '1px solid rgba(224, 224, 224, 1)',
-                borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                padding: '12px'
+            <td 
+              style={{
+                border: '1px solid #ddd',
+                padding: '8px',
+                textAlign: 'center'
               }}
             >
               {props.children}
-            </TableCell>
+            </td>
           ),
 
           blockquote: ({ node, children, ...props }) => {
