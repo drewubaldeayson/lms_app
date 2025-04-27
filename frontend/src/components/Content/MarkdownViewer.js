@@ -2,14 +2,78 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Box } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import InfoBox from './InfoBox';
+
+const CustomTable = ({ children }) => {
+  return (
+    <TableContainer component={Paper} sx={{ mb: 2 }}>
+      <Table sx={{ 
+        minWidth: 650, 
+        border: '1px solid rgba(224, 224, 224, 1)' 
+      }}>
+        {children}
+      </Table>
+    </TableContainer>
+  );
+};
+
+const CustomTableHead = ({ children }) => (
+  <TableHead sx={{ 
+    backgroundColor: '#f5f5f5',
+    '& th': {
+      fontWeight: 'bold',
+      borderBottom: '2px solid rgba(224, 224, 224, 1)'
+    }
+  }}>
+    <TableRow>{children}</TableRow>
+  </TableHead>
+);
+
+const CustomTableBody = ({ children }) => (
+  <TableBody>
+    {children}
+  </TableBody>
+);
+
+const CustomTableRow = ({ children }) => (
+  <TableRow sx={{ 
+    '&:nth-of-type(even)': { 
+      backgroundColor: 'rgba(0, 0, 0, 0.04)' 
+    },
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.08)'
+    }
+  }}>
+    {children}
+  </TableRow>
+);
+
+const CustomTableCell = ({ isHeader, children }) => (
+  <TableCell 
+    sx={{ 
+      borderRight: '1px solid rgba(224, 224, 224, 1)',
+      borderBottom: '1px solid rgba(224, 224, 224, 1)',
+      padding: '12px',
+      ...(isHeader ? { fontWeight: 'bold' } : {})
+    }}
+  >
+    {children}
+  </TableCell>
+);
 
 const MarkdownViewer = ({ content }) => {
   return (
     <Box sx={{ p: 2 }}>
       <ReactMarkdown
         components={{
+          table: CustomTable,
+          thead: CustomTableHead,
+          tbody: CustomTableBody,
+          tr: CustomTableRow,
+          th: ({ node, ...props }) => <CustomTableCell isHeader={true} {...props} />,
+          td: CustomTableCell,
+
           blockquote: ({ node, children, ...props }) => {
             console.log("BLOCKQUOTE: ", children);
             // Helper function to extract text from children recursively
