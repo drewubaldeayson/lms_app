@@ -9,7 +9,7 @@ import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import VideoPlayer from '../components/Content/VideoPlayer';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import html2pdf from 'html2pdf.js';
-
+import remarkGfm from 'remark-gfm';
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -360,6 +360,7 @@ const ContentPage = ({ setHeadings }) => {
         ) :  
         <div style={{ fontFamily: 'Calibri, sans-serif' }}>
         <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
           components={{
             table: ({node, ...props}) => (
               <table 
@@ -372,33 +373,13 @@ const ContentPage = ({ setHeadings }) => {
                 {props.children}
               </table>
             ),
-            thead: ({node, ...props}) => (
-              <thead 
-                style={{ 
-                  backgroundColor: '#f2f2f2' 
-                }}
-              >
-                {props.children}
-              </thead>
-            ),
-            tbody: ({node, ...props}) => (
-              <tbody>{props.children}</tbody>
-            ),
-            tr: ({node, ...props}) => (
-              <tr 
-                style={{
-                  borderBottom: '1px solid #ddd'
-                }}
-              >
-                {props.children}
-              </tr>
-            ),
             th: ({node, ...props}) => (
               <th 
                 style={{
                   border: '1px solid #ddd',
                   padding: '8px',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  backgroundColor: '#f2f2f2'
                 }}
               >
                 {props.children}
@@ -415,7 +396,6 @@ const ContentPage = ({ setHeadings }) => {
                 {props.children}
               </td>
             ),
-  
             blockquote: ({ node, children, ...props }) => {
               // Helper function to extract text from children recursively
               const extractText = (child) => {
