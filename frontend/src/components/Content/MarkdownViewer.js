@@ -4,48 +4,12 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Box} from '@mui/material';
 import InfoBox from './InfoBox';
-import remarkGfm from 'remark-gfm';
 
 const MarkdownViewer = ({ content }) => {
   return (
     <Box sx={{ p: 2 }}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]} 
         components={{
-          table: ({node, ...props}) => (
-            <table 
-              style={{
-                width: '100%', 
-                borderCollapse: 'collapse', 
-                border: '1px solid #ddd'
-              }}
-            >
-              {props.children}
-            </table>
-          ),
-          th: ({node, ...props}) => (
-            <th 
-              style={{
-                border: '1px solid #ddd',
-                padding: '8px',
-                textAlign: 'center',
-                backgroundColor: '#f2f2f2'
-              }}
-            >
-              {props.children}
-            </th>
-          ),
-          td: ({node, ...props}) => (
-            <td 
-              style={{
-                border: '1px solid #ddd',
-                padding: '8px',
-                textAlign: 'center'
-              }}
-            >
-              {props.children}
-            </td>
-          ),
           blockquote: ({ node, children, ...props }) => {
             console.log("BLOCKQUOTE: ", children);
             // Helper function to extract text from children recursively

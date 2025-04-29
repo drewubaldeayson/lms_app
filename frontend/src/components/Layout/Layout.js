@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
         </Box>
       } />
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
-        <Box sx={{ width: '25%', overflow: 'auto' }}>
+        <Box sx={{ width: '25%', overflow: 'auto', marginRight: '90px' }}>
           <Sidebar />
         </Box>
         <Box
