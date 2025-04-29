@@ -22,65 +22,6 @@ import NoteBox from '../components/Content/NoteBox';
 const API_URL = process.env.REACT_APP_API_URL || 'https://docs.muli.com.au';
 
 
-
-const CustomTable = ({ children }) => {
-  return (
-    <TableContainer component={Paper} sx={{ mb: 2 }}>
-      <Table sx={{ 
-        minWidth: 650, 
-        border: '1px solid rgba(224, 224, 224, 1)' 
-      }}>
-        {children}
-      </Table>
-    </TableContainer>
-  );
-};
-
-const CustomTableHead = ({ children }) => (
-  <TableHead sx={{ 
-    backgroundColor: '#f5f5f5',
-    '& th': {
-      fontWeight: 'bold',
-      borderBottom: '2px solid rgba(224, 224, 224, 1)'
-    }
-  }}>
-    <TableRow>{children}</TableRow>
-  </TableHead>
-);
-
-const CustomTableBody = ({ children }) => (
-  <TableBody>
-    {children}
-  </TableBody>
-);
-
-const CustomTableRow = ({ children }) => (
-  <TableRow sx={{ 
-    '&:nth-of-type(even)': { 
-      backgroundColor: 'rgba(0, 0, 0, 0.04)' 
-    },
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.08)'
-    }
-  }}>
-    {children}
-  </TableRow>
-);
-
-const CustomTableCell = ({ isHeader, children }) => (
-  <TableCell 
-    sx={{ 
-      borderRight: '1px solid rgba(224, 224, 224, 1)',
-      borderBottom: '1px solid rgba(224, 224, 224, 1)',
-      padding: '12px',
-      ...(isHeader ? { fontWeight: 'bold' } : {})
-    }}
-  >
-    {children}
-  </TableCell>
-);
-
-
 const ManualContentPage = ({ setHeadings }) => {
   const { '*': path } = useParams();
   const [content, setContent] = useState('');
@@ -418,12 +359,61 @@ const ManualContentPage = ({ setHeadings }) => {
         <div style={{ fontFamily: 'Calibri, sans-serif' }}>
         <ReactMarkdown
           components={{
-            table: CustomTable,
-            thead: CustomTableHead,
-            tbody: CustomTableBody,
-            tr: CustomTableRow,
-            th: ({ node, ...props }) => <CustomTableCell isHeader={true} {...props} />,
-            td: CustomTableCell,
+            table: ({node, ...props}) => (
+              <table 
+                style={{
+                  width: '100%', 
+                  borderCollapse: 'collapse', 
+                  border: '1px solid #ddd'
+                }}
+              >
+                {props.children}
+              </table>
+            ),
+            thead: ({node, ...props}) => (
+              <thead 
+                style={{ 
+                  backgroundColor: '#f2f2f2' 
+                }}
+              >
+                {props.children}
+              </thead>
+            ),
+            tbody: ({node, ...props}) => (
+              <tbody>{props.children}</tbody>
+            ),
+            tr: ({node, ...props}) => (
+              <tr 
+                style={{
+                  borderBottom: '1px solid #ddd'
+                }}
+              >
+                {props.children}
+              </tr>
+            ),
+            th: ({node, ...props}) => (
+              <th 
+                style={{
+                  border: '1px solid #ddd',
+                  padding: '8px',
+                  textAlign: 'center'
+                }}
+              >
+                {props.children}
+              </th>
+            ),
+            td: ({node, ...props}) => (
+              <td 
+                style={{
+                  border: '1px solid #ddd',
+                  padding: '8px',
+                  textAlign: 'center'
+                }}
+              >
+                {props.children}
+              </td>
+            ),
+  
             blockquote: ({ node, children, ...props }) => {
               // Helper function to extract text from children recursively
               const extractText = (child) => {
