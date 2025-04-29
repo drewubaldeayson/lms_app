@@ -237,7 +237,7 @@ const Sidebar = () => {
         },
       }}
     >
-      <Box sx={{ overflow: 'auto' }}>
+      <Box sx={{ overflow: 'auto', mb: '90px'  }}>
         {treeData && (
           <List>
             <TreeNode
